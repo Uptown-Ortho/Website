@@ -23,8 +23,8 @@
   .amt{font-family:Fraunces,serif;font-size:1.5rem;font-weight:600;white-space:nowrap}
   .amt small{font-family:Inter,sans-serif;font-size:.72rem;font-weight:600;color:var(--soft);display:block;text-align:right;margin-top:-2px}
   .card p{font-size:.93rem;color:var(--soft)}
-  .what{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
-  .what summary{cursor:pointer;font-size:.88rem;font-weight:700;color:var(--navy);list-style:none}
+  .what{margin-top:12px;border-top:1px solid var(--line);padding-top:4px}
+  .what summary{cursor:pointer;font-size:.88rem;font-weight:700;color:var(--navy);list-style:none;min-height:44px;display:flex;align-items:center}
   .what summary::-webkit-details-marker{display:none}
   .what summary::before{content:'+ ';font-weight:700}
   .what[open] summary::before{content:'\2212 '}
@@ -59,7 +59,7 @@
   .siglabel{font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--soft)}
   .sigbar{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:7px;gap:12px}
   .modes{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-  .modes button{padding:6px 14px;border:0;font:inherit;font-size:.78rem;font-weight:700;background:var(--paper);color:var(--soft);cursor:pointer}
+  .modes button{padding:0 16px;min-height:44px;border:0;font:inherit;font-size:.78rem;font-weight:700;background:var(--paper);color:var(--soft);cursor:pointer}
   .modes button[aria-pressed=true]{background:var(--navy);color:var(--white)}
   .modes button+button{border-left:1px solid var(--line)}
   .padwrap{position:relative}
