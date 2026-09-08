@@ -1,0 +1,3 @@
+# Fallback for hosts that read _headers rather than netlify.toml
+/docs/*
+  X-Robots-Tag: noindex, nofollow

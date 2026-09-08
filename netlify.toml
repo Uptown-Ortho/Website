@@ -1,0 +1,29 @@
+# Netlify config. The site is plain static HTML — no build step, no dependencies.
+#
+# Custom domain: point the apex at Netlify's load balancer with an A record.
+# Change only the web records — leave mail records untouched.
+
+[build]
+  publish = "."
+  command = ""
+
+# Images and icons are content-hashed by filename only, but they change rarely and
+# are re-uploaded under the same name when they do — so cache hard, and bump the
+# filename if an image is ever replaced in place.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# The practice questionnaire lives here and should never be indexed.
+[[headers]]
+  for = "/docs/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

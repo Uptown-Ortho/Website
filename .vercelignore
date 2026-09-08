@@ -1,0 +1,4 @@
+# generated bundles and local tooling — not part of the deployed site
+dist/
+scripts/
+.claude/
