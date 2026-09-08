@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Website — costs — Uptown Orthodontics</title>
+<title>Uptown Orthodontics Proposal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,WONK@9..144,400..600,0..1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -43,6 +43,14 @@
   .final h3{color:var(--white);font-size:1.15rem;margin-bottom:8px}
   .final p{opacity:.88;font-size:.93rem;margin-bottom:10px}
   .final p:last-child{margin-bottom:0}
+  @media print{
+    body{background:var(--white);padding-bottom:0}
+    header{background:var(--navy);-webkit-print-color-adjust:exact;print-color-adjust:exact;margin-bottom:24px}
+    .final{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .card,.compare,.final{break-inside:avoid;page-break-inside:avoid}
+    .what summary{display:none}
+    .what{border-top:1px solid var(--line)}
+  }
 </style></head><body>
 
 <header><div class="wrap">
@@ -110,4 +118,17 @@
     <p><b>Nothing is locked to me.</b> The site and the hosting are yours. If you ever want someone else on it, they get the files and my help moving it.</p>
   </div>
 
-</div></body></html>
+</div><script>
+  // Open every dropdown before printing so nothing is missing from a saved PDF,
+  // and put them back afterwards so the page on screen is unchanged.
+  var opened = [];
+  addEventListener('beforeprint', function () {
+    opened = [].filter.call(document.querySelectorAll('details'), function (d) { return !d.open; });
+    opened.forEach(function (d) { d.open = true; });
+  });
+  addEventListener('afterprint', function () {
+    opened.forEach(function (d) { d.open = false; });
+    opened = [];
+  });
+</script>
+</body></html>
