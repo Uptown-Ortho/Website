@@ -66,7 +66,7 @@
      Renders the floating "send us a message" bubble. Same account and widget ID
      as the previous WordPress site. -->
 <script defer src="https://book.getweave.com/text-connect/311687a8-40cc-4693-926a-d9f46b904d2a/widget.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,WONK@9..144,400..600,0..1&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #1c2b3a;
@@ -92,7 +92,9 @@
     line-height: 1.55;
     overflow-x: hidden;
   }
-  h1, h2, h3, .display { font-family: 'Fraunces', serif; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
+  /* Fraunces ships WONK on by default, which gives the lowercase f a curled swash
+     terminal that reads as a rendering fault at display sizes. Switched off. */
+  h1, h2, h3, .display { font-family: 'Fraunces', serif; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); font-variation-settings: 'WONK' 0; }
   .mono { font-family: 'IBM Plex Mono', monospace; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.7rem; }
   a { color: inherit; text-decoration: none; }
   img { max-width: 100%; display: block; }
@@ -671,7 +673,6 @@
     <div class="fin-grid">
       <div class="fin-card fade-up"><div class="f-icon">✚</div><h3>Insurance Accepted</h3><p>We work directly with most major insurance providers.</p></div>
       <div class="fin-card fade-up"><div class="f-icon">▤</div><h3>Flexible Monthly Payments</h3><p>Typically around 20% to start, then monthly payments built around your household.</p></div>
-      <div class="fin-card fade-up"><div class="f-icon">%</div><h3>CareCredit Financing</h3><p>Interest-free plans available through CareCredit \u2014 most orthodontic practices, including ours, accept it.</p><a href="https://www.carecredit.com/apply/" target="_blank" rel="noopener" style="font-size:0.8rem; font-weight:700; color:var(--coral); display:inline-block; margin-top:10px;">Apply with CareCredit \u2192</a></div>
       <div class="fin-card fade-up"><div class="f-icon">✎</div><h3>New Patient Forms</h3><p>Text <strong>FORMS</strong> to <a href="sms:9898942929" style="color:var(--coral); font-weight:700;">989.894.2929</a> and your paperwork arrives by text or email — nothing to print.</p></div>
       <div class="fin-card fade-up"><div class="f-icon">✓</div><h3>Free Consultation</h3><p>Your first visit — and your evaluation — cost nothing.</p></div>
     </div>
