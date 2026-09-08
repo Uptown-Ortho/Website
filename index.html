@@ -187,6 +187,8 @@
   .trust-badges { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 30px; }
   .trust-badges .badge { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: rgba(248,247,243,0.85); font-weight: 500; }
   .trust-badges .stars { color: var(--coral); letter-spacing: 1px; }
+  .badge-link { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: rgba(248,247,243,0.5); transition: text-decoration-color 0.2s; }
+  .badge-link:hover { text-decoration-color: var(--coral); }
   @media (max-width: 900px) { .hero h1 { font-size: 2.3rem; } .hero { min-height: 560px; } }
 
   /* TRUST RIBBON */
@@ -433,7 +435,7 @@
       <a href="#doctor" class="btn-secondary" style="border-color:rgba(255,255,255,0.6); color:var(--white);">Meet Our Doctors</a>
     </div>
     <div class="trust-badges">
-      <div class="badge"><span class="star-rating" style="--fill:90%" role="img" aria-label="4.5 out of 5 stars"><span class="sr-track"></span><span class="sr-fill"></span></span> 4.5 on Google</div>
+      <div class="badge"><span class="star-rating" style="--fill:90%" role="img" aria-label="4.5 out of 5 stars"><span class="sr-track"></span><span class="sr-fill"></span></span> 4.5 on <a href="https://www.google.com/maps/place/?q=place_id:ChIJia67j7LhI4gREKmKe1k3m2U" target="_blank" rel="noopener" class="badge-link">Google</a></div>
       <div class="badge">20+ Years Serving Bay City</div>
       <div class="badge">Thousands of Smiles Created</div>
       <div class="badge">Flexible Financing</div>
