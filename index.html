@@ -132,6 +132,7 @@
   /* NAV */
   nav { position: sticky; top: 0; z-index: 50; background: rgba(248,247,243,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(28,43,58,0.08); }
   nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 78px; }
+  .brand-link { display: block; flex-shrink: 0; }
   .brand-logo { height: 54px; width: auto; display: block; }
   .nav-phone { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.95rem; color: var(--navy); }
   .nav-phone svg { width: 16px; height: 16px; }
@@ -366,7 +367,7 @@
 
 <nav>
   <div class="wrap">
-    <img class="brand-logo" src="assets/img/logo.png" alt="Uptown Orthodontics" width="177" height="54">
+    <a href="/" class="brand-link"><img class="brand-logo" src="assets/img/logo.png" alt="Uptown Orthodontics" width="177" height="54"></a>
     <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
       <span></span><span></span><span></span>
     </button>
@@ -746,6 +747,16 @@
   });
   navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNavMenu));
   window.addEventListener('resize', () => { if (window.innerWidth > 1100) closeNavMenu(); });
+
+  // logo returns home — smooth-scroll rather than reload when already on the homepage
+  const brandLink = document.querySelector('.brand-link');
+  brandLink.addEventListener('click', (e) => {
+    const onHome = location.pathname === '/' || /\/index\.html$/.test(location.pathname);
+    if (!onHome) return;
+    e.preventDefault();
+    closeNavMenu();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
   // hero rotating background
   const heroSlides = document.querySelectorAll('#heroBg .slide');
