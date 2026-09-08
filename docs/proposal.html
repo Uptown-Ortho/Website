@@ -43,11 +43,53 @@
   .final h3{color:var(--white);font-size:1.15rem;margin-bottom:8px}
   .final p{opacity:.88;font-size:.93rem;margin-bottom:10px}
   .final p:last-child{margin-bottom:0}
+  /* Acceptance block. Ported from the Parks & Rec SignaturePad — same
+     rect-scaled coordinates and draw/type toggle, rebuilt on pointer events
+     so one code path covers finger, stylus and mouse. */
+  .sign{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin-top:32px}
+  .sign h3{font-size:1.15rem;margin-bottom:4px}
+  .sign>p.lede{font-size:.93rem;color:var(--soft);margin-bottom:18px}
+  .agree{display:flex;gap:11px;align-items:flex-start;cursor:pointer;background:var(--tint);border-radius:11px;padding:14px 16px;margin-bottom:18px}
+  .agree input{width:20px;height:20px;flex:0 0 auto;margin-top:1px;accent-color:var(--navy);cursor:pointer}
+  .agree span{font-size:.93rem}
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  .field label{display:block;font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--soft);margin-bottom:5px}
+  .field input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:.95rem;color:var(--ink);background:var(--paper)}
+  .field input:focus-visible,.agree input:focus-visible,.sign button:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+  .siglabel{font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--soft)}
+  .sigbar{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:7px;gap:12px}
+  .modes{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .modes button{padding:6px 14px;border:0;font:inherit;font-size:.78rem;font-weight:700;background:var(--paper);color:var(--soft);cursor:pointer}
+  .modes button[aria-pressed=true]{background:var(--navy);color:var(--white)}
+  .modes button+button{border-left:1px solid var(--line)}
+  .padwrap{position:relative}
+  #pad{width:100%;height:150px;display:block;border:1px dashed rgba(28,43,58,.3);border-radius:11px;background:var(--paper);touch-action:none;cursor:crosshair}
+  .padhint{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:.76rem;color:rgba(28,43,58,.32);pointer-events:none;user-select:none}
+  #typed{width:100%;padding:22px 14px;border:1px dashed rgba(28,43,58,.3);border-radius:11px;background:var(--paper);font-family:Fraunces,Georgia,serif;font-size:1.5rem;color:var(--ink)}
+  #clear{position:absolute;top:9px;right:10px;font:inherit;font-size:.74rem;font-weight:700;padding:4px 11px;border-radius:6px;border:1px solid var(--line);background:var(--white);color:var(--soft);cursor:pointer}
+  .accept{margin-top:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  #accept{font:inherit;font-weight:700;font-size:.95rem;padding:13px 26px;border:0;border-radius:10px;background:var(--navy);color:var(--white);cursor:pointer}
+  #accept[disabled]{background:rgba(28,43,58,.16);color:rgba(28,43,58,.45);cursor:not-allowed}
+  .why{font-size:.84rem;color:var(--soft)}
+  .signed{background:var(--tint);border:1px solid rgba(42,81,148,.25);border-radius:14px;padding:20px 22px}
+  .signed .badge{font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--good);margin-bottom:12px}
+  .signed .mark{min-height:64px;margin-bottom:10px}
+  .signed .mark img{max-height:88px}
+  .signed .mark .astyped{font-family:Fraunces,Georgia,serif;font-size:1.6rem}
+  .signed dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:.88rem;border-top:1px solid rgba(28,43,58,.13);padding-top:12px}
+  .signed dt{font-weight:700}
+  .signed dd{color:var(--soft)}
+  .after{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .after a,.after button{font:inherit;font-size:.85rem;font-weight:700;padding:10px 18px;border-radius:9px;cursor:pointer;text-decoration:none;border:1px solid var(--navy);background:var(--white);color:var(--navy)}
+  .after a.primary{background:var(--navy);color:var(--white)}
+  @media(max-width:560px){.fields{grid-template-columns:1fr}}
   @media print{
     body{background:var(--white);padding-bottom:0}
     header{background:var(--navy);-webkit-print-color-adjust:exact;print-color-adjust:exact;margin-bottom:24px}
     .final{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    .card,.compare,.final{break-inside:avoid;page-break-inside:avoid}
+    .card,.compare,.final,.sign{break-inside:avoid;page-break-inside:avoid}
+    .modes,#clear,.accept,.after,.padhint{display:none}
+    .sign{border:1px solid var(--line)}
     .what summary{display:none}
     .what{border-top:1px solid var(--line)}
   }
@@ -118,6 +160,60 @@
     <p><b>Nothing is locked to me.</b> The site and the hosting are yours. If you ever want someone else on it, they get the files and my help moving it.</p>
   </div>
 
+  <div class="sign" id="signcard">
+    <h3>Agreeing to this</h3>
+    <p class="lede">Ticking the box and signing below means you accept the two amounts above and what they cover. It is not a payment &mdash; nothing is invoiced until we switch the domain over.</p>
+
+    <div id="form">
+      <label class="agree" for="agree">
+        <input type="checkbox" id="agree">
+        <span>I have read the above and agree to <b>$3,000 at launch</b> and <b>$240 a year starting January 2027</b>.</span>
+      </label>
+
+      <div class="fields">
+        <div class="field"><label for="who">Your name</label><input id="who" autocomplete="name" placeholder="Hannah Collison"></div>
+        <div class="field"><label for="role">Role</label><input id="role" placeholder="Orthodontist, Uptown Orthodontics"></div>
+      </div>
+
+      <div class="sigbar">
+        <span class="siglabel">Signature</span>
+        <div class="modes">
+          <button type="button" id="mdraw" aria-pressed="true">Draw</button>
+          <button type="button" id="mtype" aria-pressed="false">Type</button>
+        </div>
+      </div>
+      <div class="padwrap" id="padwrap">
+        <canvas id="pad" aria-label="Signature area — draw your signature with your finger or mouse"></canvas>
+        <div class="padhint" id="padhint">Sign with your finger</div>
+        <button type="button" id="clear" hidden>Clear</button>
+      </div>
+      <input id="typed" hidden placeholder="Type your full name" autocomplete="off" aria-label="Typed signature">
+
+      <div class="accept">
+        <button type="button" id="accept" disabled>Accept</button>
+        <span class="why" id="why">Tick the box, add your name, and sign.</span>
+      </div>
+    </div>
+
+    <div id="done" hidden>
+      <div class="signed">
+        <div class="badge">&#10003; Accepted</div>
+        <div class="mark" id="mark"></div>
+        <dl>
+          <dt>Name</dt><dd id="dname"></dd>
+          <dt>Role</dt><dd id="drole"></dd>
+          <dt>Date</dt><dd id="ddate"></dd>
+        </dl>
+      </div>
+      <div class="after">
+        <a class="primary" id="send" href="#">Send it back to Ryan</a>
+        <button type="button" id="save">Save a copy (PDF)</button>
+        <button type="button" id="redo">Start over</button>
+      </div>
+      <p class="note">Sending opens your email app. Attach the saved PDF if you want a copy with the signature on it.</p>
+    </div>
+  </div>
+
 </div><script>
   // Open every dropdown before printing so nothing is missing from a saved PDF,
   // and put them back afterwards so the page on screen is unchanged.
@@ -130,5 +226,148 @@
     opened.forEach(function (d) { d.open = false; });
     opened = [];
   });
+</script>
+<script>
+(function () {
+  var KEY = 'uptown-proposal-accepted-v1';
+  var $ = function (id) { return document.getElementById(id); };
+  var pad = $('pad'), ctx = pad.getContext('2d');
+  var mode = 'draw', drawn = false;
+
+  // The canvas is sized in CSS but drawn in device pixels, so set the backing
+  // store to match the DPR or strokes come out soft on a phone.
+  function fit() {
+    var prev = drawn ? pad.toDataURL() : null;
+    var r = pad.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+    pad.width = Math.round(r.width * d);
+    pad.height = Math.round(r.height * d);
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.strokeStyle = '#1c2b3a'; ctx.lineWidth = 2.2;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    if (prev) { var i = new Image(); i.onload = function () { ctx.drawImage(i, 0, 0, r.width, r.height); }; i.src = prev; }
+  }
+
+  function pos(e) {
+    var r = pad.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+  var last = null;
+  pad.addEventListener('pointerdown', function (e) {
+    e.preventDefault();
+    // Capture keeps the stroke alive past the canvas edge, but a lost or refused
+    // capture must not kill drawing — `last` is what actually gates the stroke.
+    try { pad.setPointerCapture(e.pointerId); } catch (err) {}
+    last = pos(e);
+    ctx.beginPath(); ctx.arc(last.x, last.y, 1.1, 0, Math.PI * 2);
+    ctx.fillStyle = '#1c2b3a'; ctx.fill();
+    mark();
+  });
+  pad.addEventListener('pointermove', function (e) {
+    if (!last) return;
+    e.preventDefault();
+    var q = pos(e);
+    ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+    last = q;
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (t) {
+    pad.addEventListener(t, function () { last = null; });
+  });
+  addEventListener('pointerup', function () { last = null; });
+
+  function mark() { drawn = true; $('padhint').hidden = true; $('clear').hidden = false; gate(); }
+  $('clear').addEventListener('click', function () {
+    ctx.clearRect(0, 0, pad.width, pad.height);
+    drawn = false; $('padhint').hidden = false; this.hidden = true; gate();
+  });
+
+  function setMode(m) {
+    mode = m;
+    $('mdraw').setAttribute('aria-pressed', m === 'draw');
+    $('mtype').setAttribute('aria-pressed', m === 'type');
+    $('padwrap').hidden = m !== 'draw';
+    $('typed').hidden = m !== 'type';
+    gate();
+  }
+  $('mdraw').addEventListener('click', function () { setMode('draw'); });
+  $('mtype').addEventListener('click', function () { setMode('type'); $('typed').focus(); });
+
+  function signature() {
+    if (mode === 'type') { var v = $('typed').value.trim(); return v ? { kind: 'typed', value: v } : null; }
+    return drawn ? { kind: 'drawn', value: pad.toDataURL('image/png') } : null;
+  }
+
+  function gate() {
+    var why = [];
+    if (!$('agree').checked) why.push('tick the box');
+    if (!$('who').value.trim()) why.push('add your name');
+    if (!signature()) why.push('sign');
+    $('accept').disabled = why.length > 0;
+    $('why').textContent = why.length ? 'Still to do: ' + why.join(', ') + '.' : 'Ready.';
+  }
+  ['agree', 'who', 'role', 'typed'].forEach(function (id) {
+    $(id).addEventListener('input', gate);
+    $(id).addEventListener('change', gate);
+  });
+
+  function show(rec) {
+    $('form').hidden = true;
+    $('done').hidden = false;
+    $('mark').innerHTML = '';
+    if (rec.sig.kind === 'drawn') {
+      var img = new Image();
+      img.src = rec.sig.value; img.alt = 'Signature of ' + rec.name;
+      $('mark').appendChild(img);
+    } else {
+      var sp = document.createElement('div');
+      sp.className = 'astyped'; sp.textContent = rec.sig.value;
+      $('mark').appendChild(sp);
+    }
+    $('dname').textContent = rec.name;
+    $('drole').textContent = rec.role || '\u2014';
+    $('ddate').textContent = new Date(rec.at).toLocaleString(undefined,
+      { dateStyle: 'long', timeStyle: 'short' });
+
+    var body = 'I accept the website proposal for Uptown Orthodontics.\n\n'
+      + '$3,000 at launch\n$240 a year starting January 2027\n\n'
+      + 'Name: ' + rec.name + '\n'
+      + (rec.role ? 'Role: ' + rec.role + '\n' : '')
+      + 'Signed: ' + new Date(rec.at).toLocaleString() + '\n'
+      + 'Signature: ' + (rec.sig.kind === 'drawn' ? 'drawn on the page (see attached PDF)' : 'typed as "' + rec.sig.value + '"') + '\n';
+    $('send').href = 'mailto:rcarrier32@gmail.com'
+      + '?subject=' + encodeURIComponent('Accepted \u2014 Uptown Orthodontics website proposal')
+      + '&body=' + encodeURIComponent(body);
+  }
+
+  $('accept').addEventListener('click', function () {
+    var rec = {
+      name: $('who').value.trim(),
+      role: $('role').value.trim(),
+      sig: signature(),
+      at: new Date().toISOString()
+    };
+    if (!rec.sig) return;
+    try { localStorage.setItem(KEY, JSON.stringify(rec)); } catch (e) {}
+    show(rec);
+    $('signcard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  $('save').addEventListener('click', function () { window.print(); });
+  $('redo').addEventListener('click', function () {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    $('done').hidden = true; $('form').hidden = false;
+    $('clear').click(); $('typed').value = ''; $('agree').checked = false;
+    setMode('draw'); gate();
+  });
+
+  fit();
+  addEventListener('resize', fit);
+  gate();
+
+  // A reload should not lose an acceptance already made on this device.
+  try {
+    var saved = localStorage.getItem(KEY);
+    if (saved) show(JSON.parse(saved));
+  } catch (e) {}
+})();
 </script>
 </body></html>
