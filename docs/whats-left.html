@@ -188,47 +188,47 @@
 
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
+  // No synthetic events between parent and children — they recursed. Each handler
+  // sets the other side directly and then repaints once.
   items.forEach(item => {
     const cb = item.querySelector('.cb');
     const key = item.dataset.key;
     const subs = [...item.querySelectorAll('.subcb')];
 
-    if (state[key]) { cb.checked = true; item.classList.add('checked'); }
-
-    // a counter next to the heading, so partial progress is visible
     let counter = null;
     if (subs.length) {
       counter = document.createElement('span');
       counter.className = 'subcount';
       item.querySelector('h3').appendChild(counter);
     }
-    function syncCounter() {
-      if (!counter) return;
-      const d = subs.filter(x => x.checked).length;
-      counter.textContent = d ? d + '/' + subs.length : '';
+
+    function paint() {
+      item.classList.toggle('checked', cb.checked);
+      if (counter) {
+        const done = subs.filter(x => x.checked).length;
+        counter.textContent = done ? done + '/' + subs.length : '';
+      }
+    }
+    function persist() {
+      state[key] = cb.checked;
+      subs.forEach((sc, i) => { state[key + ':' + i] = sc.checked; });
+      save();
     }
 
-    subs.forEach((sc, i) => {
-      const sk = key + ':' + i;
-      if (state[sk]) sc.checked = true;
-      sc.addEventListener('change', () => {
-        state[sk] = sc.checked;
-        // all sub-items ticked marks the whole thing done
-        if (subs.every(x => x.checked) && !cb.checked) { cb.checked = true; cb.dispatchEvent(new Event('change')); }
-        else if (!subs.every(x => x.checked) && cb.checked) { cb.checked = false; cb.dispatchEvent(new Event('change')); }
-        syncCounter(); save();
-      });
-    });
-    syncCounter();
+    if (state[key]) cb.checked = true;
+    subs.forEach((sc, i) => { if (state[key + ':' + i]) sc.checked = true; });
+    paint();
 
     cb.addEventListener('change', () => {
-      item.classList.toggle('checked', cb.checked);
-      state[key] = cb.checked;
-      // the parent cascades both ways, so the counter can never contradict the tick
-      if (subs.length) subs.forEach((sc, i) => { sc.checked = cb.checked; state[key + ':' + i] = cb.checked; });
-      syncCounter(); save(); refresh();
+      subs.forEach(sc => { sc.checked = cb.checked; });
+      paint(); persist(); refresh();
     });
+    subs.forEach(sc => sc.addEventListener('change', () => {
+      cb.checked = subs.every(x => x.checked);
+      paint(); persist(); refresh();
+    }));
   });
+
   refresh();
 
   document.getElementById('sendBtn').addEventListener('click', () => {
