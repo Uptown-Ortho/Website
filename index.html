@@ -54,7 +54,7 @@
   ],
   "sameAs": [
     "https://facebook.com/baycitybraces",
-    "https://instagram.com/baycitybraces"
+    "https://www.instagram.com/uptown_orthodontics/"
   ]
 }
 </script>
@@ -192,6 +192,10 @@
   .trust-ribbon .wrap { display: grid; grid-template-columns: repeat(5,1fr); gap: 20px; text-align: center; }
   .trust-item .icon { width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 50%; background: var(--white); display: flex; align-items: center; justify-content: center; color: var(--navy); font-family: 'Fraunces',serif; font-size: 1.1rem; box-shadow: 0 4px 14px rgba(28,43,58,0.08); }
   .trust-item .t-label { font-size: 0.82rem; font-weight: 600; color: var(--ink); }
+  /* Linked, but deliberately not styled as buttons — they stay a reassurance band. */
+  a.trust-item { cursor: pointer; }
+  a.trust-item .icon { transition: transform 0.2s, box-shadow 0.2s; }
+  a.trust-item:hover .icon { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(28,43,58,0.12); }
   @media (max-width: 860px) { .trust-ribbon .wrap { grid-template-columns: repeat(2,1fr); } }
 
   /* DOCTOR */
@@ -361,6 +365,11 @@
   footer { padding: 40px 0; border-top: 1px solid rgba(28,43,58,0.1); }
   footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
   footer .mono { opacity: 0.5; }
+  /* Full brand colours on purpose — people identify these by colour before shape. */
+  .social { display: flex; gap: 10px; margin-top: 6px; }
+  .social-link { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: -6px; border-radius: 12px; transition: transform 0.2s, background 0.2s; }
+  .social-link:hover { transform: translateY(-2px); background: rgba(28,43,58,0.05); }
+  .social-link svg { width: 28px; height: 28px; display: block; }
 </style>
 </head>
 <body>
@@ -409,11 +418,11 @@
 
 <div class="trust-ribbon">
   <div class="wrap">
-    <div class="trust-item"><div class="icon">✓</div><div class="t-label">AAO Member<br>Orthodontists</div></div>
-    <div class="trust-item"><div class="icon">◎</div><div class="t-label">State-of-the-Art<br>Technology</div></div>
-    <div class="trust-item"><div class="icon">%</div><div class="t-label">Flexible<br>Financing</div></div>
-    <div class="trust-item"><div class="icon">⌂</div><div class="t-label">Family-Friendly<br>Office</div></div>
-    <div class="trust-item"><div class="icon">＋</div><div class="t-label">Insurance<br>Accepted</div></div>
+    <a class="trust-item" href="#doctor"><div class="icon">✓</div><div class="t-label">AAO Member<br>Orthodontists</div></a>
+    <a class="trust-item" href="#treatments"><div class="icon">◎</div><div class="t-label">State-of-the-Art<br>Technology</div></a>
+    <a class="trust-item" href="#financing"><div class="icon">%</div><div class="t-label">Flexible<br>Financing</div></a>
+    <a class="trust-item" href="#team"><div class="icon">⌂</div><div class="t-label">Family-Friendly<br>Office</div></a>
+    <a class="trust-item" href="#financing"><div class="icon">＋</div><div class="t-label">Insurance<br>Accepted</div></a>
   </div>
 </div>
 
@@ -726,8 +735,23 @@
       <a href="#book" class="mono" style="font-weight:700;">Schedule Free Consultation &rarr;</a>
       <a href="https://www.google.com/maps/place/?q=place_id:ChIJia67j7LhI4gREKmKe1k3m2U" target="_blank" rel="noopener" class="mono">Google Reviews &rarr;</a>
       <a href="https://search.google.com/local/writereview?placeid=ChIJia67j7LhI4gREKmKe1k3m2U" target="_blank" rel="noopener" class="mono">Leave a Review &rarr;</a>
-      <a href="https://facebook.com/baycitybraces" target="_blank" rel="noopener" class="mono">Facebook</a>
-      <a href="https://instagram.com/baycitybraces" target="_blank" rel="noopener" class="mono">Instagram</a>
+      <div class="social">
+        <a class="social-link" href="https://facebook.com/baycitybraces" target="_blank" rel="noopener" aria-label="Uptown Orthodontics on Facebook">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+        </a>
+        <a class="social-link" href="https://www.instagram.com/uptown_orthodontics/" target="_blank" rel="noopener" aria-label="Uptown Orthodontics on Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="igGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#FEDA75"/><stop offset="25%" stop-color="#FA7E1E"/>
+                <stop offset="50%" stop-color="#D62976"/><stop offset="75%" stop-color="#962FBF"/>
+                <stop offset="100%" stop-color="#4F5BD5"/>
+              </linearGradient>
+            </defs>
+            <path fill="url(#igGrad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.8490 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 08.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.26.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
+        </a>
+      </div>
     </div>
     <div class="mono" style="max-width:340px; font-size:0.72rem; opacity:0.7;">Before &amp; after images shown are illustrative pending patient-approved cases.</div>
   </div>
