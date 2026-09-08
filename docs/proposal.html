@@ -23,6 +23,12 @@
   .amt{font-family:Fraunces,serif;font-size:1.5rem;font-weight:600;white-space:nowrap}
   .amt small{font-family:Inter,sans-serif;font-size:.72rem;font-weight:600;color:var(--soft);display:block;text-align:right;margin-top:-2px}
   .card p{font-size:.93rem;color:var(--soft)}
+  .what{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+  .what summary{cursor:pointer;font-size:.88rem;font-weight:700;color:var(--navy);list-style:none}
+  .what summary::-webkit-details-marker{display:none}
+  .what summary::before{content:'+ ';font-weight:700}
+  .what[open] summary::before{content:'\2212 '}
+  .what ul{margin-top:10px}
   ul{margin:10px 0 0 18px;font-size:.93rem;color:var(--soft)}
   li{margin-bottom:7px}
   li b{color:var(--ink)}
@@ -50,6 +56,22 @@
   <div class="card">
     <div class="row"><h3>Building the site</h3><div class="amt">$3,000<small>due at launch</small></div></div>
     <p>Built and live &mdash; you have been looking at it. Invoiced when we switch the domain over, not before.</p>
+    <details class="what">
+      <summary>What that covers</summary>
+      <ul>
+        <li>Both doctors, with credentials and society memberships</li>
+        <li>The full team</li>
+        <li>Every treatment &mdash; braces, aligners, Phase 1, surgery, retainers, the laser, 3D imaging</li>
+        <li>Your Google rating and reviews, with a leave-a-review button</li>
+        <li>The smile quiz</li>
+        <li>Contact and new patient forms through Weave, the way you already work</li>
+        <li>Insurance, payment plans and the free consultation</li>
+        <li>Community involvement and the St. Patrick's Day Race</li>
+        <li>Written and built for how people search locally</li>
+        <li>Works properly on a phone</li>
+        <li>Hosting set up in your name</li>
+      </ul>
+    </details>
   </div>
 
   <div class="card">
@@ -60,7 +82,7 @@
       <li><b>Anything broken</b> &mdash; one business day</li>
       <li><b>First update</b> &mdash; your Patient Info pages, once written</li>
       <li><b>Hosting included</b> &mdash; the site runs on Netlify, in an account you own</li>
-      <li>Bigger jobs like new sections get quoted separately &mdash; <b>I will always tell you before something is billable</b></li>
+      <li><b>I will always check with you before anything costs extra</b> &mdash; no surprise invoices</li>
     </ul>
   </div>
 
