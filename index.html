@@ -230,6 +230,8 @@
   .team-card.has-bio .tm-more { display: block; }
 
   .team-modal { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  /* Author display:flex outranks the UA [hidden]{display:none} rule, so hidden must be explicit. */
+  .team-modal[hidden] { display: none; }
   .tm-backdrop { position: absolute; inset: 0; background: rgba(28,43,58,0.55); backdrop-filter: blur(3px); }
   .tm-panel { position: relative; background: var(--white); border-radius: 22px; padding: 36px 32px 32px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 30px 70px rgba(28,43,58,0.3); max-height: 85vh; overflow-y: auto; }
   .tm-close { position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 1.7rem; line-height: 1; color: var(--ink-soft); cursor: pointer; padding: 6px 10px; }
