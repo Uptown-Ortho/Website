@@ -224,8 +224,8 @@
     cb.addEventListener('change', () => {
       item.classList.toggle('checked', cb.checked);
       state[key] = cb.checked;
-      // ticking the parent ticks everything under it
-      if (cb.checked && subs.length) subs.forEach((sc, i) => { sc.checked = true; state[key + ':' + i] = true; });
+      // the parent cascades both ways, so the counter can never contradict the tick
+      if (subs.length) subs.forEach((sc, i) => { sc.checked = cb.checked; state[key + ':' + i] = cb.checked; });
       syncCounter(); save(); refresh();
     });
   });
