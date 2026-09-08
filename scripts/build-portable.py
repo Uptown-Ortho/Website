@@ -13,6 +13,10 @@ import base64, mimetypes, pathlib, re, sys
 
 root = pathlib.Path(__file__).resolve().parent.parent
 src = (root / 'index.html').read_text(encoding='utf-8')
+
+# Commented-out markup is not rendered, so paths inside comments are not real
+# references — scan with comments stripped, then apply edits to the original.
+scan_src = re.sub(r'<!--.*?-->', '', src, flags=re.S)
 out_path = root / 'dist' / 'uptown-ortho-preview.html'
 out_path.parent.mkdir(exist_ok=True)
 

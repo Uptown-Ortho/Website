@@ -28,7 +28,7 @@
   "name": "Uptown Orthodontics",
   "url": "https://uptown-ortho.com/",
   "telephone": "+1-989-894-2929",
-  "email": "baycitybraces@gmail.com",
+  "email": "office@uptown-ortho.com",
   "image": "https://uptown-ortho.com/assets/og-image.jpg",
   "address": {
     "@type": "PostalAddress",
@@ -220,6 +220,22 @@
   .team-initials { display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%; background: var(--navy); color: var(--white); font-family: 'Fraunces', serif; font-size: 1.5rem; }
   .team-card h3 { font-size: 1.05rem; margin-bottom: 2px; }
   .team-card p { font-size: 0.82rem; color: var(--ink-soft); }
+  .team-photo { width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%; object-fit: cover; display: block; }
+  /* Only people with a bio become interactive — everyone else looks unchanged. */
+  .team-card.has-bio { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+  .team-card.has-bio:hover, .team-card.has-bio:focus-visible { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(28,43,58,0.12); }
+  .team-card .tm-more { display: none; font-size: 0.72rem; color: var(--coral); font-weight: 700; margin-top: 8px; }
+  .team-card.has-bio .tm-more { display: block; }
+
+  .team-modal { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .tm-backdrop { position: absolute; inset: 0; background: rgba(28,43,58,0.55); backdrop-filter: blur(3px); }
+  .tm-panel { position: relative; background: var(--white); border-radius: 22px; padding: 36px 32px 32px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 30px 70px rgba(28,43,58,0.3); max-height: 85vh; overflow-y: auto; }
+  .tm-close { position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 1.7rem; line-height: 1; color: var(--ink-soft); cursor: pointer; padding: 6px 10px; }
+  .tm-avatar { width: 88px; height: 88px; margin: 0 auto 16px; border-radius: 50%; background: var(--navy); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 2rem; overflow: hidden; }
+  .tm-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .tm-panel h3 { font-size: 1.4rem; margin-bottom: 2px; }
+  .tm-role { font-size: 0.82rem; color: var(--coral); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 16px; }
+  .tm-bio { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6; text-align: left; }
 
   #community { padding: 0; }
   .community-band { display: flex; align-items: center; gap: 32px; background: var(--navy); color: var(--white); border-radius: 24px; padding: 40px 44px; margin: 72px 0 0; }
@@ -470,12 +486,15 @@
       <p>The same faces at every visit &mdash; that is most of what makes a practice feel easy.</p>
     </div>
     <div class="team-grid">
-      <div class="team-card fade-up"><span class="team-initials">A</span><h3>April</h3><p>Office Manager</p></div>
-      <div class="team-card fade-up"><span class="team-initials">A</span><h3>Amanda</h3><p>Patient Coordinator</p></div>
-      <div class="team-card fade-up"><span class="team-initials">A</span><h3>Ashtyn</h3><p>Orthodontic Assistant</p></div>
-      <div class="team-card fade-up"><span class="team-initials">B</span><h3>Beth</h3><p>Orthodontic Assistant</p></div>
-      <div class="team-card fade-up"><span class="team-initials">M</span><h3>Maddison</h3><p>Orthodontic Assistant</p></div>
-      <div class="team-card fade-up"><span class="team-initials">S</span><h3>Sandy</h3><p>Orthodontic Assistant</p></div>
+      <div class="team-card fade-up" data-name="April" data-role="Office Manager"><span class="team-initials">A</span><h3>April</h3><p>Office Manager</p>
+        <!-- To switch on the profile modal for this person, add a bio here and
+             swap .team-initials for an img.team-photo pointing at their headshot
+        <div class="team-bio" hidden>Two or three sentences.</div> --></div>
+      <div class="team-card fade-up" data-name="Amanda" data-role="Patient Coordinator"><span class="team-initials">A</span><h3>Amanda</h3><p>Patient Coordinator</p></div>
+      <div class="team-card fade-up" data-name="Ashtyn" data-role="Orthodontic Assistant"><span class="team-initials">A</span><h3>Ashtyn</h3><p>Orthodontic Assistant</p></div>
+      <div class="team-card fade-up" data-name="Beth" data-role="Orthodontic Assistant"><span class="team-initials">B</span><h3>Beth</h3><p>Orthodontic Assistant</p></div>
+      <div class="team-card fade-up" data-name="Maddison" data-role="Orthodontic Assistant"><span class="team-initials">M</span><h3>Maddison</h3><p>Orthodontic Assistant</p></div>
+      <div class="team-card fade-up" data-name="Sandy" data-role="Orthodontic Assistant"><span class="team-initials">S</span><h3>Sandy</h3><p>Orthodontic Assistant</p></div>
     </div>
   </div>
 </section>
@@ -687,7 +706,7 @@
       <h2>Come find your perfect smile.</h2>
       <div class="info-row"><span class="mono">Address</span><span>130 E Main Street, Bay City, MI 48708</span></div>
       <div class="info-row"><span class="mono">Phone</span><span><a href="tel:9898942929" style="font-weight:700; color:var(--coral);">989.894.2929</a></span></div>
-      <div class="info-row"><span class="mono">Email</span><span><a href="mailto:baycitybraces@gmail.com" style="color:var(--navy);">baycitybraces@gmail.com</a></span></div>
+      <div class="info-row"><span class="mono">Email</span><span><a href="mailto:office@uptown-ortho.com" style="color:var(--navy);">office@uptown-ortho.com</a></span></div>
       <div class="info-row"><span class="mono">Hours</span><span>Mon–Thu 7:30a–4:30p<br><span style="font-size:0.88em; opacity:0.75;">Fri 8a–Noon — phones only</span></span></div>
       <div class="info-row"><span class="mono">Parking</span><span>Free on-site parking, Uptown Bay City</span></div>
       <a href="#book" class="btn-primary">Schedule Consultation</a>
@@ -756,6 +775,17 @@
     <div class="mono" style="max-width:340px; font-size:0.72rem; opacity:0.7;">Before &amp; after images shown are illustrative pending patient-approved cases.</div>
   </div>
 </footer>
+
+<div class="team-modal" id="teamModal" hidden>
+  <div class="tm-backdrop" data-tm-close></div>
+  <div class="tm-panel" role="dialog" aria-modal="true" aria-labelledby="tmName">
+    <button class="tm-close" type="button" aria-label="Close" data-tm-close>&times;</button>
+    <div class="tm-avatar" id="tmAvatar" aria-hidden="true"></div>
+    <h3 id="tmName"></h3>
+    <p class="tm-role" id="tmRole"></p>
+    <div class="tm-bio" id="tmBio"></div>
+  </div>
+</div>
 
 <script>
   // mobile hamburger menu
@@ -964,7 +994,65 @@
   });
   showStep(0);
 
+  // Team profiles. A card only becomes interactive once it has a .team-bio, so the
+  // section looks exactly as it does now until someone's details actually arrive.
+  const teamModal = document.getElementById('teamModal');
+  const tmAvatar = document.getElementById('tmAvatar');
+  const tmName = document.getElementById('tmName');
+  const tmRole = document.getElementById('tmRole');
+  const tmBio = document.getElementById('tmBio');
+  let tmLastFocus = null;
+
+  function closeTeamModal() {
+    teamModal.hidden = true;
+    document.body.style.overflow = '';
+    if (tmLastFocus) tmLastFocus.focus();
+  }
+  function openTeamModal(card) {
+    const photo = card.querySelector('.team-photo');
+    const initials = card.querySelector('.team-initials');
+    tmAvatar.innerHTML = '';
+    if (photo) {
+      const img = document.createElement('img');
+      img.src = photo.getAttribute('src');
+      img.alt = '';
+      tmAvatar.appendChild(img);
+    } else if (initials) {
+      tmAvatar.textContent = initials.textContent;
+    }
+    tmName.textContent = card.dataset.name || '';
+    tmRole.textContent = card.dataset.role || '';
+    tmBio.textContent = card.querySelector('.team-bio').textContent.trim();
+    tmLastFocus = card;
+    teamModal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    teamModal.querySelector('.tm-close').focus();
+  }
+
+  document.querySelectorAll('.team-card').forEach(card => {
+    const bio = card.querySelector('.team-bio');
+    if (!bio || !bio.textContent.trim()) return;   // no bio yet — leave the card inert
+    card.classList.add('has-bio');
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-haspopup', 'dialog');
+    const more = document.createElement('div');
+    more.className = 'tm-more';
+    more.textContent = 'Read more \u2192';
+    card.appendChild(more);
+    card.addEventListener('click', () => openTeamModal(card));
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openTeamModal(card); }
+    });
+  });
+
+  teamModal.querySelectorAll('[data-tm-close]').forEach(el => el.addEventListener('click', closeTeamModal));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !teamModal.hidden) closeTeamModal();
+  });
+
 </script>
+
 
 </body>
 </html>
