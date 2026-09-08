@@ -42,6 +42,23 @@ Weave's `widget.js` appends its iframes to `document.body` and exposes no contai
 option, so the bubble cannot be made inline. The inline form works because the panel it
 opens is a standalone page that permits framing.
 
+## The Weave widget errors on preview URLs — this is expected
+
+Sending a message from a `.netlify.app` or `.vercel.app` preview shows
+*"Sending text failed: Request failed with status code 401"*. The message still
+delivers and the auto-reply still fires.
+
+Confirmed by A/B test 2026-09-08: the identical widget, on the same Weave account, works
+with no error on `uptown-ortho.com`. The only variable is the origin, so Weave is
+validating the requesting domain against the one registered to that widget ID.
+
+**Not a bug, and not worth a support ticket.** It clears itself once the site is on
+`uptown-ortho.com`. Re-test after cutover to confirm; if the error survives the domain
+change, *then* it is Weave's.
+
+Side effect: contact cannot be fully tested from a preview URL. Test on the live domain,
+or ask Weave whether the preview domain can be added to the widget's allowed origins.
+
 ## Notes for whoever edits this next
 
 - **The Google rating is hardcoded** — in the hero badge and the reviews banner, alongside
