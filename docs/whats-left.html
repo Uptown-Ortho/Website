@@ -58,6 +58,14 @@
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
   .btn{font:inherit;font-size:.9rem;font-weight:700;padding:13px 22px;border-radius:100px;border:1.5px solid transparent;background:var(--coral);color:#fff;cursor:pointer}
   .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+
+  .hd{cursor:pointer;display:block}
+  .sub{display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:2px 0}
+  .subcb{appearance:none;flex:0 0 auto;width:19px;height:19px;margin-top:2px;border:2px solid var(--line);border-radius:5px;background:#fff;cursor:pointer;position:relative;transition:all .15s}
+  .subcb:checked{background:var(--good);border-color:var(--good)}
+  .subcb:checked::after{content:'';position:absolute;left:5px;top:2px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+  .sub:has(.subcb:checked) span{opacity:.5;text-decoration:line-through}
+  .subcount{font-size:.74rem;font-weight:700;color:var(--good);margin-left:8px}
 </style></head><body>
 
 <header><div class="wrap">
@@ -72,63 +80,63 @@
   <h2>The photo shoot</h2>
   <p class="sub">The big one — this single shoot covers four different things on the site.</p>
 
-  <label class="item" data-key="the-shot-list"><input type="checkbox" class="cb"><div class="body">
+  <div class="item" data-key="the-shot-list"><input type="checkbox" class="cb" id="cb-the-shot-list"><div class="body">
     <span class="tag t-you">For your photographer</span>
-    <h3>The shot list</h3>
+    <label class="hd" for="cb-the-shot-list"><h3>The shot list</h3></label>
     <ul>
-      <li><b>The two of you together — landscape, not a portrait.</b> It runs across the full width of the page, so ask for the largest file they can give you. The current photo is a little small for modern screens, and it has the old <i>LeBourdais Orthodontics</i> sign on the wall behind you.</li>
-      <li><b>A head-and-shoulders of each team member</b> — April, Amanda, Ashtyn, Beth, Maddison and Sandy. Their cards currently show initials.</li>
-      <li><b>Three or four of the office and treatment rooms</b>, with the new signage.</li>
-      <li><b>Two or three patients smiling</b> — see the next section. Five extra minutes while they're already there.</li>
+      <li><label class="sub"><input type="checkbox" class="subcb"><span><b>The two of you together — landscape, not a portrait.</b> It runs across the full width of the page, so ask for the largest file they can give you. The current photo is a little small for modern screens, and it has the old <i>LeBourdais Orthodontics</i> sign on the wall behind you.</span></label></li>
+      <li><label class="sub"><input type="checkbox" class="subcb"><span><b>A head-and-shoulders of each team member</b> — April, Amanda, Ashtyn, Beth, Maddison and Sandy. Their cards currently show initials.</span></label></li>
+      <li><label class="sub"><input type="checkbox" class="subcb"><span><b>Three or four of the office and treatment rooms</b>, with the new signage.</span></label></li>
+      <li><label class="sub"><input type="checkbox" class="subcb"><span><b>Two or three patients smiling</b> — see the next section. Five extra minutes while they're already there.</span></label></li>
     </ul>
-  </div></label>
+  </div></div>
 
   <h2>Before &amp; afters</h2>
   <p class="sub">You sent two cases. Two small things before they go on the site.</p>
 
-  <label class="item" data-key="confirm-the-photo-release-covers-the-web"><input type="checkbox" class="cb"><div class="body">
+  <div class="item" data-key="confirm-the-photo-release-covers-the-web"><input type="checkbox" class="cb" id="cb-confirm-the-photo-release-covers-the-web"><div class="body">
     <span class="tag t-you">Need your OK</span>
-    <h3>Confirm the photo release covers the website</h3>
+    <label class="hd" for="cb-confirm-the-photo-release-covers-the-web"><h3>Confirm the photo release covers the website</h3></label>
     <p>Just need to know your intake paperwork allows using treatment photos publicly, and that signing it isn't required to be treated. If yes, that's all I need.</p>
-  </div></label>
+  </div></div>
 
-  <label class="item" data-key="make-the-after-a-real-smile"><input type="checkbox" class="cb"><div class="body">
+  <div class="item" data-key="make-the-after-a-real-smile"><input type="checkbox" class="cb" id="cb-make-the-after-a-real-smile"><div class="body">
     <span class="tag t-you">Worth doing</span>
-    <h3>Make the "after" a real smile</h3>
+    <label class="hd" for="cb-make-the-after-a-real-smile"><h3>Make the "after" a real smile</h3></label>
     <p>The "before" should stay clinical — that's the proof. But the "after" lands much harder as the patient actually smiling than as a second close-up of teeth. Same patient, two different kinds of photo.</p>
     <p>Worth asking the photographer for while they're in — it turns this into the best section on the site rather than the weakest.</p>
-  </div></label>
+  </div></div>
 
   <h2>A few quick ones</h2>
 
-  <label class="item" data-key="merge-the-duplicate-google-listing"><input type="checkbox" class="cb"><div class="body">
+  <div class="item" data-key="merge-the-duplicate-google-listing"><input type="checkbox" class="cb" id="cb-merge-the-duplicate-google-listing"><div class="body">
     <span class="tag t-you">Yours to do</span>
-    <h3>Merge the duplicate Google listing</h3>
+    <label class="hd" for="cb-merge-the-duplicate-google-listing"><h3>Merge the duplicate Google listing</h3></label>
     <p>There are two listings: <b>Uptown Orthodontics</b> with your reviews, and an older <b>BayCityBraces</b> one with none. Having both splits your reviews and makes you harder to find. Merging them is free.</p>
     <p>You can request it through Google Business Profile support — you own the listings, so it has to come from you. Worth doing before we switch the domain over.</p>
-  </div></label>
+  </div></div>
 
-  <label class="item" data-key="turn-on-weave-s-automatic-review-request"><input type="checkbox" class="cb"><div class="body">
+  <div class="item" data-key="turn-on-weave-s-automatic-review-request"><input type="checkbox" class="cb" id="cb-turn-on-weave-s-automatic-review-request"><div class="body">
     <span class="tag t-you">Biggest win here</span>
-    <h3>Turn on Weave's automatic review requests</h3>
+    <label class="hd" for="cb-turn-on-weave-s-automatic-review-request"><h3>Turn on Weave's automatic review requests</h3></label>
     <p>Weave can text patients a review link after their appointment. You have 15 Google reviews — seeing patients four days a week, you should be adding several a month.</p>
     <p>Honestly, this will bring you more new patients than anything on the website. Worth asking Weave which patients it sends to, since most of yours are kids and it should go to the parent.</p>
-  </div></label>
+  </div></div>
 
-  <label class="item" data-key="the-payment-wording"><input type="checkbox" class="cb"><div class="body">
+  <div class="item" data-key="the-payment-wording"><input type="checkbox" class="cb" id="cb-the-payment-wording"><div class="body">
     <span class="tag t-you">Quick confirm</span>
-    <h3>The payment wording</h3>
+    <label class="hd" for="cb-the-payment-wording"><h3>The payment wording</h3></label>
     <p>The site currently says <i>"typically around 20% to start, then monthly payments."</i> That came from your note — just confirm it's how you'd want it phrased.</p>
-  </div></label>
+  </div></div>
 
   <h2>After we go live</h2>
 
-  <label class="item" data-key="the-patient-info-pages"><input type="checkbox" class="cb"><div class="body">
+  <div class="item" data-key="the-patient-info-pages"><input type="checkbox" class="cb" id="cb-the-patient-info-pages"><div class="body">
     <span class="tag t-later">Not urgent</span>
-    <h3>The Patient Info pages</h3>
+    <label class="hd" for="cb-the-patient-info-pages"><h3>The Patient Info pages</h3></label>
     <p>Appliance care, Herbst, expanders, reverse pull facemask, rubber bands, and keeping teeth straight afterwards — the list you sent.</p>
     <p>This is the most useful content on your whole list. It's what people search at 9pm when something breaks, and nobody else locally covers it. It's also the only part I can't write for you. Send them whenever you have time and I'll put them up.</p>
-  </div></label>
+  </div></div>
 
   <div class="done">
     <h3>Already done</h3>
@@ -178,15 +186,47 @@
       : done + ' of ' + items.length + ' done';
   }
 
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
   items.forEach(item => {
     const cb = item.querySelector('.cb');
     const key = item.dataset.key;
+    const subs = [...item.querySelectorAll('.subcb')];
+
     if (state[key]) { cb.checked = true; item.classList.add('checked'); }
+
+    // a counter next to the heading, so partial progress is visible
+    let counter = null;
+    if (subs.length) {
+      counter = document.createElement('span');
+      counter.className = 'subcount';
+      item.querySelector('h3').appendChild(counter);
+    }
+    function syncCounter() {
+      if (!counter) return;
+      const d = subs.filter(x => x.checked).length;
+      counter.textContent = d ? d + '/' + subs.length : '';
+    }
+
+    subs.forEach((sc, i) => {
+      const sk = key + ':' + i;
+      if (state[sk]) sc.checked = true;
+      sc.addEventListener('change', () => {
+        state[sk] = sc.checked;
+        // all sub-items ticked marks the whole thing done
+        if (subs.every(x => x.checked) && !cb.checked) { cb.checked = true; cb.dispatchEvent(new Event('change')); }
+        else if (!subs.every(x => x.checked) && cb.checked) { cb.checked = false; cb.dispatchEvent(new Event('change')); }
+        syncCounter(); save();
+      });
+    });
+    syncCounter();
+
     cb.addEventListener('change', () => {
       item.classList.toggle('checked', cb.checked);
       state[key] = cb.checked;
-      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
-      refresh();
+      // ticking the parent ticks everything under it
+      if (cb.checked && subs.length) subs.forEach((sc, i) => { sc.checked = true; state[key + ':' + i] = true; });
+      syncCounter(); save(); refresh();
     });
   });
   refresh();
