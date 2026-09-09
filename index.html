@@ -66,7 +66,7 @@
      Renders the floating "send us a message" bubble. Same account and widget ID
      as the previous WordPress site. -->
 <script defer src="https://book.getweave.com/text-connect/311687a8-40cc-4693-926a-d9f46b904d2a/widget.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,WONK@9..144,400..600,0..1&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400..600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #1c2b3a;
@@ -92,9 +92,8 @@
     line-height: 1.55;
     overflow-x: hidden;
   }
-  /* Fraunces ships WONK on by default, which gives the lowercase f a curled swash
-     terminal that reads as a rendering fault at display sizes. Switched off. */
-  h1, h2, h3, .display { font-family: 'Fraunces', serif; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); font-variation-settings: 'WONK' 0; }
+  /* Headings: Lora, chosen by the practice from the comparison in docs/font-options.html. */
+  h1, h2, h3, .display { font-family: 'Lora', Georgia, serif; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
   .mono { font-family: 'IBM Plex Mono', monospace; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.7rem; }
   a { color: inherit; text-decoration: none; }
   img { max-width: 100%; display: block; }
@@ -124,7 +123,7 @@
     background: linear-gradient(to top, rgba(0,0,0,0.35), transparent);
   }
   .photo-ph .ph-label .mono { color: var(--white); opacity: 0.85; margin-bottom: 4px; }
-  .photo-ph .ph-label .ph-title { font-family: 'Fraunces', serif; font-size: 1.05rem; }
+  .photo-ph .ph-label .ph-title { font-family: 'Lora', Georgia, serif; font-size: 1.05rem; }
   .photo-ph.light {
     background: linear-gradient(155deg, #dfe6f0, #c7d3e6);
   }
@@ -194,7 +193,7 @@
   /* TRUST RIBBON */
   .trust-ribbon { background: var(--blue-tint); border-top: 1px solid rgba(28,43,58,0.06); border-bottom: 1px solid rgba(28,43,58,0.06); padding: 40px 0; }
   .trust-ribbon .wrap { display: grid; grid-template-columns: repeat(5,1fr); gap: 20px; text-align: center; }
-  .trust-item .icon { width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 50%; background: var(--white); display: flex; align-items: center; justify-content: center; color: var(--navy); font-family: 'Fraunces',serif; font-size: 1.1rem; box-shadow: 0 4px 14px rgba(28,43,58,0.08); }
+  .trust-item .icon { width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 50%; background: var(--white); display: flex; align-items: center; justify-content: center; color: var(--navy); font-family: 'Lora',Georgia,serif; font-size: 1.1rem; box-shadow: 0 4px 14px rgba(28,43,58,0.08); }
   .trust-item .t-label { font-size: 0.82rem; font-weight: 600; color: var(--ink); }
   /* Linked, but deliberately not styled as buttons — they stay a reassurance band. */
   a.trust-item { cursor: pointer; }
@@ -214,14 +213,14 @@
   .doc-bio .creds { color: var(--navy); font-weight: 600; font-size: 0.88rem; margin-bottom: 6px; }
   .doc-bio .memberships { font-size: 0.76rem; color: var(--ink-soft); line-height: 1.5; margin-bottom: 14px; }
   .doc-bio p.bio { color: var(--ink-soft); margin-bottom: 16px; font-size: 0.95rem; }
-  .doc-bio .doctor-quote { border-left: 3px solid var(--coral); padding-left: 16px; font-family: 'Fraunces', serif; font-size: 1.02rem; color: var(--ink); }
+  .doc-bio .doctor-quote { border-left: 3px solid var(--coral); padding-left: 16px; font-family: 'Lora', Georgia, serif; font-size: 1.02rem; color: var(--ink); }
   .doctor-cta { text-align: center; margin-top: 40px; }
 
   /* Team cards use initials until real headshots arrive — swap .team-initials for
      an <img class="team-photo"> and the layout holds. */
   .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 22px; }
   .team-card { background: var(--white); border-radius: 18px; padding: 26px 18px; text-align: center; border: 1px solid rgba(28,43,58,0.07); }
-  .team-initials { display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%; background: var(--navy); color: var(--white); font-family: 'Fraunces', serif; font-size: 1.5rem; }
+  .team-initials { display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%; background: var(--navy); color: var(--white); font-family: 'Lora', Georgia, serif; font-size: 1.5rem; }
   .team-card h3 { font-size: 1.05rem; margin-bottom: 2px; }
   .team-card p { font-size: 0.82rem; color: var(--ink-soft); }
   .team-photo { width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%; object-fit: cover; display: block; }
@@ -237,7 +236,7 @@
   .tm-backdrop { position: absolute; inset: 0; background: rgba(28,43,58,0.55); backdrop-filter: blur(3px); }
   .tm-panel { position: relative; background: var(--white); border-radius: 22px; padding: 36px 32px 32px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 30px 70px rgba(28,43,58,0.3); max-height: 85vh; overflow-y: auto; }
   .tm-close { position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 1.7rem; line-height: 1; color: var(--ink-soft); cursor: pointer; padding: 6px 10px; }
-  .tm-avatar { width: 88px; height: 88px; margin: 0 auto 16px; border-radius: 50%; background: var(--navy); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 2rem; overflow: hidden; }
+  .tm-avatar { width: 88px; height: 88px; margin: 0 auto 16px; border-radius: 50%; background: var(--navy); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: 'Lora', Georgia, serif; font-size: 2rem; overflow: hidden; }
   .tm-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .tm-panel h3 { font-size: 1.4rem; margin-bottom: 2px; }
   .tm-role { font-size: 0.82rem; color: var(--coral); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 16px; }
@@ -265,7 +264,7 @@
   /* BEFORE AFTER */
   .ba-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 28px; margin-bottom: 40px; }
   .ba-slider { position: relative; aspect-ratio: 4/3; border-radius: 20px; overflow: hidden; cursor: ew-resize; user-select: none; box-shadow: 0 14px 34px rgba(28,43,58,0.12); }
-  .ba-before, .ba-after { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--white); font-family: 'Fraunces', serif; }
+  .ba-before, .ba-after { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--white); font-family: 'Lora', Georgia, serif; }
   .ba-before { background: linear-gradient(155deg,#9aa7b8,#6b7789); }
   .ba-after { background: linear-gradient(155deg, var(--navy), var(--navy-dark)); overflow: hidden; }
   .ba-tag { position: absolute; top: 16px; padding: 6px 14px; border-radius: 100px; font-family:'IBM Plex Mono',monospace; font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; background: rgba(0,0,0,0.35); color: var(--white); }
@@ -289,7 +288,7 @@
   .star-rating .sr-fill { position: absolute; left: 0; top: 0; overflow: hidden; color: var(--coral); width: var(--fill, 100%); }
 
   .rating-banner { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 28px; }
-  .rating-banner .g-num { font-family: 'Fraunces', serif; font-size: 2.4rem; line-height: 1; }
+  .rating-banner .g-num { font-family: 'Lora', Georgia, serif; font-size: 2.4rem; line-height: 1; }
   .rating-banner .star-rating { color: var(--coral); font-size: 1.4rem; letter-spacing: 2px; }
   .rating-banner .g-sub { font-size: 0.82rem; opacity: 0.6; margin-top: 4px; }
   .review-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
@@ -303,7 +302,7 @@
   /* Quotation marks hug the text at both ends. line-height:0 keeps the oversized
      glyphs from stretching the line box. */
   .t-card p.body::before,
-  .t-card p.body::after { color: var(--coral); font-family: 'Fraunces', serif; font-size: 1.35em; line-height: 0; vertical-align: -0.18em; }
+  .t-card p.body::after { color: var(--coral); font-family: 'Lora', Georgia, serif; font-size: 1.35em; line-height: 0; vertical-align: -0.18em; }
   .t-card p.body::before { content: '\201C'; margin-right: 1px; }
   .t-card p.body::after  { content: '\201D'; margin-left: 1px; }
   .t-card .who { font-size: 0.82rem; opacity: 0.55; }
