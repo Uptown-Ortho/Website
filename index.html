@@ -269,7 +269,8 @@
   .ba-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 28px; margin-bottom: 40px; }
   .ba-slider { position: relative; aspect-ratio: 4/3; border-radius: 20px; overflow: hidden; cursor: ew-resize; user-select: none; box-shadow: 0 14px 34px rgba(28,43,58,0.12); }
   .ba-before, .ba-after { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--white); font-family: 'Lora', Georgia, serif; }
-  .ba-before { background: linear-gradient(155deg,#9aa7b8,#6b7789); }
+  .ba-before { background: linear-gradient(155deg,#9aa7b8,#6b7789); overflow: hidden; }
+  .ba-before img, .ba-after img { position: absolute; top: 0; left: 0; height: 100%; width: auto; max-width: none; }
   .ba-after { background: linear-gradient(155deg, var(--navy), var(--navy-dark)); overflow: hidden; }
   .ba-tag { position: absolute; top: 16px; padding: 6px 14px; border-radius: 100px; font-family:'IBM Plex Mono',monospace; font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; background: rgba(0,0,0,0.35); color: var(--white); }
   .ba-before .ba-tag { left: 16px; }
@@ -565,26 +566,26 @@
 <section id="results" style="background:var(--blue-tint)">
   <div class="wrap">
     <div class="section-head fade-up">
-      <span class="mono">Before &amp; After — Demo</span>
+      <span class="mono">Before &amp; After</span>
       <h2>See the difference treatment makes.</h2>
-      <p>Drag the slider to see the effect. These are placeholders — real cases will replace them.</p>
+      <p>Drag the slider to compare. Real cases treated here, shared with permission.</p>
     </div>
     <div class="ba-grid">
       <div class="fade-up">
         <div class="ba-slider" data-ba>
-          <div class="ba-after"><span class="ba-tag">After</span></div>
-          <div class="ba-before" style="width:50%"><span class="ba-tag">Before</span></div>
+          <div class="ba-after"><img src="assets/img/case-e-after.jpg" alt="After treatment: upper and lower teeth aligned and the gap closed" width="1200" height="900" loading="lazy" decoding="async"><span class="ba-tag">After</span></div>
+          <div class="ba-before" style="width:50%"><img src="assets/img/case-e-before.jpg" alt="Before treatment: upper front teeth protruding with a gap at the midline" width="1200" height="900" loading="lazy" decoding="async"><span class="ba-tag">Before</span></div>
           <div class="ba-handle" style="left:50%"></div>
         </div>
-        <p class="ba-quote" style="opacity:0.6; font-style:italic;">[Placeholder — real patient case pending]</p>
+        <p class="ba-quote">Protruding upper front teeth and a midline gap, closed and aligned.</p>
       </div>
       <div class="fade-up">
         <div class="ba-slider" data-ba>
-          <div class="ba-after"><span class="ba-tag">After</span></div>
-          <div class="ba-before" style="width:50%"><span class="ba-tag">Before</span></div>
+          <div class="ba-after"><img src="assets/img/case-p-after.jpg" alt="After treatment: the arch aligned with every tooth in position" width="1200" height="900" loading="lazy" decoding="async"><span class="ba-tag">After</span></div>
+          <div class="ba-before" style="width:50%"><img src="assets/img/case-p-before.jpg" alt="Before treatment: severe crowding with the upper canines blocked out of the arch" width="1200" height="900" loading="lazy" decoding="async"><span class="ba-tag">Before</span></div>
           <div class="ba-handle" style="left:50%"></div>
         </div>
-        <p class="ba-quote" style="opacity:0.6; font-style:italic;">[Placeholder — real patient case pending]</p>
+        <p class="ba-quote">Severe crowding with both upper canines blocked out, brought into the arch.</p>
       </div>
     </div>
     <div class="ba-cta fade-up"><a href="#stories" class="btn-secondary">See More Success Stories</a></div>
