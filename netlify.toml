@@ -27,3 +27,15 @@
   for = "/docs/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+
+# /docs/ is working material for the relaunch — the proposal, the client checklist,
+# the type options. It is for Hannah before go-live, never for patients after it.
+# Branch deploys keep serving it so it can be shared during the build; production
+# refuses it, so nothing under /docs/ is reachable on uptown-ortho.com once the
+# domain points here. Deleting the files instead would break the review URL, and
+# relying on remembering to remove them at cutover is not a plan.
+[[context.production.redirects]]
+  from = "/docs/*"
+  to = "/"
+  status = 404
+  force = true
