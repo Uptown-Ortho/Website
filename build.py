@@ -62,6 +62,75 @@ def nav_for(page: str, nav: str) -> str:
     return nav
 
 
+
+# ── Responsive images ────────────────────────────────────────────────────────
+# Every device was downloading the same file: a phone pulled a 1400px-wide image
+# into a 311px tile, roughly four times the pixels it can use. build.py now emits
+# width variants and a srcset so the browser picks. Variants are generated here
+# and committed, so the host still serves plain files.
+
+VARIANT_WIDTHS = (400, 800, 1200)
+
+# `sizes` has to describe the layout or the browser guesses 100vw and picks the
+# largest file. Keyed by filename; the value is the CSS width of the slot.
+SIZES = {
+    'doctors-portraits.jpg': '(max-width: 1240px) 100vw, 1200px',
+    'default_grid':          '(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px',
+}
+# Images small enough that variants would not pay for themselves.
+SKIP = {'logo.png', 'dr-collison-avatar.jpg', 'dr-lebourdais-avatar.jpg'}
+
+
+def make_variants(name: str) -> list:
+    """Write <stem>-<w>.<ext> beside the original; return the widths that exist."""
+    try:
+        from PIL import Image
+    except ImportError:
+        return []
+    src = ROOT / 'assets' / 'img' / name
+    if not src.exists():
+        return []
+    im = Image.open(src)
+    made = []
+    for w in VARIANT_WIDTHS:
+        if w >= im.width:
+            continue
+        stem, ext = name.rsplit('.', 1)
+        out = src.with_name(f'{stem}-{w}.{ext}')
+        if not out.exists() or out.stat().st_mtime < src.stat().st_mtime:
+            r = im.convert('RGB') if ext.lower() in ('jpg', 'jpeg') else im.copy()
+            r = r.resize((w, round(im.height * w / im.width)), Image.LANCZOS)
+            if ext.lower() in ('jpg', 'jpeg'):
+                r.save(out, 'JPEG', quality=74, optimize=True, progressive=True)
+            else:
+                r.save(out, optimize=True)
+        made.append(w)
+    return made
+
+
+def add_srcset(html: str) -> str:
+    """Attach srcset/sizes to every <img> that has variants."""
+    def one(m):
+        tag = m.group(0)
+        f = re.search(r'src="assets/img/([\w.-]+)"', tag)
+        if not f or 'srcset=' in tag:
+            return tag
+        name = f.group(1)
+        if name in SKIP:
+            return tag
+        widths = make_variants(name)
+        if not widths:
+            return tag
+        stem, ext = name.rsplit('.', 1)
+        srcset = ', '.join(f'assets/img/{stem}-{w}.{ext} {w}w' for w in widths)
+        from PIL import Image
+        full = Image.open(ROOT / 'assets' / 'img' / name).width
+        srcset += f', assets/img/{name} {full}w'
+        sizes = SIZES.get(name, SIZES['default_grid'])
+        return tag[:-1] + f' srcset="{srcset}" sizes="{sizes}">'
+    return re.sub(r'<img\b[^>]*>', one, html)
+
+
 def asset_version(name: str) -> str:
     """Short content hash, appended to the CSS/JS URLs as ?v=.
 
@@ -94,6 +163,7 @@ def build() -> int:
                 .replace('{{FOOTER}}', footer)
                 .replace('{{CSSV}}', cssv)
                 .replace('{{JSV}}', jsv))
+        html = add_srcset(html)
         left = re.findall(r'\{\{[A-Z]+\}\}', html)
         if left:
             print(f'ERROR: {page}.html still has placeholders: {left}', file=sys.stderr)
