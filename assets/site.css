@@ -154,7 +154,8 @@
   @media (max-width: 860px) { .trust-ribbon .wrap { grid-template-columns: repeat(2,1fr); } }
 
   /* DOCTOR */
-  .doctor-photo-full { aspect-ratio: 2.06/1; width: 100%; margin-bottom: 44px; }
+  .doctor-photo-full { aspect-ratio: 2.06/1; width: 100%; margin-bottom: 44px; overflow: hidden; }
+  .doctor-photo-full img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .doctor-bios { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; }
   /* Small portrait beside each name — the banner shows both doctors together, so
      without these there is nothing telling the reader which one is which. */
