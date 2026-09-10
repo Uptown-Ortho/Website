@@ -142,6 +142,19 @@
   .nav-links { display: flex; gap: 32px; align-items: center; }
   .nav-links a { font-size: 0.88rem; font-weight: 500; opacity: 0.75; transition: opacity 0.2s; }
   .nav-links a:hover { opacity: 1; }
+  /* Grouped nav. Every section is now one click away — half of them previously
+     had no nav entry at all, which is why scrolling felt like the only way
+     around. Opens on hover with a pointer, on click/Enter otherwise, so it works
+     on touch and by keyboard. */
+  .nav-item { position: relative; display: flex; align-items: center; }
+  .nav-top { font: inherit; font-size: 0.9rem; font-weight: 500; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+  .nav-top::after { content: ''; width: 5px; height: 5px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translate(-1px,-1px); transition: transform 0.2s; }
+  .nav-item[data-open] .nav-top::after { transform: rotate(-135deg) translate(-2px,-2px); }
+  .nav-sub { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); min-width: 210px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 8px; box-shadow: 0 16px 40px rgba(28,43,58,0.14); display: none; flex-direction: column; gap: 2px; margin-top: 10px; }
+  .nav-item[data-open] .nav-sub { display: flex; }
+  .nav-sub a { padding: 10px 14px; border-radius: 9px; font-size: 0.9rem; white-space: nowrap; }
+  .nav-sub a:hover, .nav-sub a:focus-visible { background: var(--tint); }
+  .nav-top:focus-visible, .nav-sub a:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
   .nav-cta { background: var(--coral-text); color: var(--white) !important; padding: 11px 22px; border-radius: 100px; font-size: 0.85rem !important; font-weight: 600 !important; opacity: 1 !important; transition: transform 0.2s, box-shadow 0.2s; }
   .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(241,107,82,0.35); }
   .nav-hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; margin: -8px; }
@@ -161,6 +174,10 @@
     .nav-links.open { max-height: calc(100vh - 78px); overflow-y: auto; }
     .nav-links a:not(.nav-cta) { display: block; width: 100%; padding: 16px 24px; border-bottom: 1px solid rgba(28,43,58,0.06); opacity: 1; }
     .nav-links .nav-cta { margin: 16px 24px; text-align: center; }
+    .nav-item { display: block; width: 100%; }
+    .nav-top { width: 100%; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid rgba(28,43,58,0.06); font-size: 1rem; }
+    .nav-sub { position: static; transform: none; min-width: 0; border: 0; border-radius: 0; box-shadow: none; margin: 0; padding: 0; background: var(--paper); }
+    .nav-sub a { padding-left: 44px !important; border-radius: 0; }
   }
 
   /* BUTTONS */
@@ -420,11 +437,25 @@
       <span></span><span></span><span></span>
     </button>
     <div class="nav-links" id="navLinks">
-      <a href="#treatments">Treatments</a>
-      <a href="#doctor">Our Doctors</a>
-      <a href="#quiz">Smile Quiz</a>
-      <a href="#stories">Reviews</a>
-      <a href="#location">Visit</a>
+      <div class="nav-item has-sub">
+          <button type="button" class="nav-top" aria-expanded="false" aria-controls="sub-about">About Us</button>
+          <div class="nav-sub" id="sub-about">
+            <a href="#doctor">Meet the Doctors</a>
+            <a href="#team">Meet the Team</a>
+            <a href="#community">In the Community</a>
+            <a href="#location">The Office</a>
+          </div>
+        </div>
+        <div class="nav-item has-sub">
+          <button type="button" class="nav-top" aria-expanded="false" aria-controls="sub-treat">Treatments</button>
+          <div class="nav-sub" id="sub-treat">
+            <a href="#treatments">All Treatments</a>
+            <a href="#results">Before &amp; After</a>
+            <a href="#financing">Insurance &amp; Payment</a>
+          </div>
+        </div>
+        <a href="#quiz">Smile Quiz</a>
+        <a href="#stories">Reviews</a>
       <a href="#book" class="nav-cta">Schedule Free Consultation</a>
     </div>
   </div>
@@ -832,6 +863,34 @@
   });
   navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNavMenu));
   window.addEventListener('resize', () => { if (window.innerWidth > 1100) closeNavMenu(); });
+
+  // Grouped nav. Pointer devices open on hover; touch and keyboard open on
+  // click, so the top-level item is a real button rather than a dead link.
+  (function () {
+    const items = [...document.querySelectorAll('.nav-item.has-sub')];
+    const hoverable = window.matchMedia('(hover: hover) and (min-width: 1101px)');
+    const setOpen = (item, open) => {
+      if (open) item.setAttribute('data-open', ''); else item.removeAttribute('data-open');
+      item.querySelector('.nav-top').setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    const closeAll = (except) => items.forEach(i => { if (i !== except) setOpen(i, false); });
+
+    items.forEach(item => {
+      const btn = item.querySelector('.nav-top');
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const open = item.hasAttribute('data-open');
+        closeAll(item); setOpen(item, !open);
+      });
+      item.addEventListener('mouseenter', () => { if (hoverable.matches) { closeAll(item); setOpen(item, true); } });
+      item.addEventListener('mouseleave', () => { if (hoverable.matches) setOpen(item, false); });
+      // Choosing a destination should close the menu, on every size.
+      item.querySelectorAll('.nav-sub a').forEach(a =>
+        a.addEventListener('click', () => { setOpen(item, false); closeNavMenu(); }));
+    });
+    document.addEventListener('click', () => closeAll(null));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(null); });
+  })();
 
   // logo returns home — smooth-scroll rather than reload when already on the homepage
   const brandLink = document.querySelector('.brand-link');
