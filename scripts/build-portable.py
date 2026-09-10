@@ -33,15 +33,23 @@ def data_uri(rel):
         inlined[rel] = f"data:{mime};base64,{base64.b64encode(raw).decode()}"
     return inlined[rel]
 
+def _path(ref: str) -> str:
+    """assets/site.css?v=abcd1234 -> assets/site.css.
+
+    build.py appends a content hash so the seven-day CDN cache on /assets/*
+    cannot serve stale CSS after a deploy. The file on disk has no query.
+    """
+    return ref.split('?', 1)[0]
+
 # url('assets/...') in inline styles and CSS
 def css_repl(m):
-    uri = data_uri(m.group(2))
+    uri = data_uri(_path(m.group(2)))
     return m.group(0) if uri is None else f"url({m.group(1)}{uri}{m.group(1)})"
 src = re.sub(r"url\((['\"]?)(assets/[^'\")]+)\1\)", css_repl, src)
 
 # src="assets/..." and href="assets/..." on img / link
 def attr_repl(m):
-    uri = data_uri(m.group(2))
+    uri = data_uri(_path(m.group(2)))
     return m.group(0) if uri is None else f'{m.group(1)}="{uri}"'
 src = re.sub(r'\b(src|href)="(assets/[^"]+)"', attr_repl, src)
 
@@ -55,5 +63,5 @@ for r in sorted(inlined): print(f"   {r}")
 if missing:
     print("MISSING:", *missing, sep="\n   "); sys.exit(1)
 print(f"\nwrote {out_path.relative_to(root)}  ({out_path.stat().st_size/1024:.0f} KB)")
-left = re.findall(r'["\'(](assets/[^"\')]+)', src)
+left = [_path(r) for r in re.findall(r'["\'(](assets/[^"\')]+)', src)]
 print("unresolved local refs:", left or "none")

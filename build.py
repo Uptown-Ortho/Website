@@ -7,7 +7,7 @@ into pages did not cost us that.
 
     python3 build.py
 """
-import pathlib, re, sys
+import hashlib, pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).parent
 SRC = ROOT / 'src'
@@ -56,14 +56,27 @@ def nav_for(page: str, nav: str) -> str:
         return nav
     # Top-level buttons (dropdowns) and plain links are both possible.
     nav = re.sub(rf'(<button[^>]*class="nav-top"[^>]*)(>{re.escape(label)}</button>)',
-                 r'\1 aria-current="true"\2', nav)
+                 r'\1 aria-current="page"\2', nav)
     nav = re.sub(rf'(<a href="[^"]*"[^>]*)(>{re.escape(label)}</a>)',
                  r'\1 aria-current="page"\2', nav)
     return nav
 
 
+def asset_version(name: str) -> str:
+    """Short content hash, appended to the CSS/JS URLs as ?v=.
+
+    netlify.toml caches /assets/* for seven days while HTML is must-revalidate.
+    Without this, a deploy would serve returning visitors new HTML against
+    week-old CSS — the one combination that renders a broken page. The hash
+    changes only when the file does, so the long cache still does its job.
+    """
+    data = (ROOT / 'assets' / name).read_bytes()
+    return hashlib.sha256(data).hexdigest()[:8]
+
+
 def build() -> int:
     layout = (SRC / 'layout.html').read_text(encoding='utf-8')
+    cssv, jsv = asset_version('site.css'), asset_version('site.js')
     nav = (SRC / 'nav.html').read_text(encoding='utf-8').strip()
     footer = (SRC / 'footer.html').read_text(encoding='utf-8').strip()
     jsonld = (SRC / 'jsonld.html').read_text(encoding='utf-8').strip()
@@ -78,7 +91,9 @@ def build() -> int:
                 .replace('{{JSONLD}}', '\n' + jsonld + '\n' if meta.get('jsonld') else '')
                 .replace('{{NAV}}', nav_for(page, nav))
                 .replace('{{CONTENT}}', content)
-                .replace('{{FOOTER}}', footer))
+                .replace('{{FOOTER}}', footer)
+                .replace('{{CSSV}}', cssv)
+                .replace('{{JSV}}', jsv))
         left = re.findall(r'\{\{[A-Z]+\}\}', html)
         if left:
             print(f'ERROR: {page}.html still has placeholders: {left}', file=sys.stderr)
