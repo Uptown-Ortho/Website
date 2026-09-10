@@ -13,3 +13,5 @@ dist/
 _internal/
 recovered
 recovered-history
+
+# build.py output is committed (Netlify serves it directly); nothing to ignore here.
