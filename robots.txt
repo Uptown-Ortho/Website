@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Working documents for the practice, not for patients or search.
+Disallow: /docs/
+
+Sitemap: https://uptown-ortho.com/sitemap.xml
