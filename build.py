@@ -23,22 +23,22 @@ PAGES = {
              'Invisalign providers, treating kids, teens and adults. Free consultation, 989.894.2929.',
         jsonld=True),
     'about': dict(
-        path='about.html',
+        path='about',
         title='Meet Our Doctors &amp; Team — Uptown Orthodontics, Bay City MI',
         desc='Dr. Brandan LeBourdais and Dr. Hannah Collison, and the team you will see at '
              'every visit. AAO member orthodontists serving Bay City and the Tri-Cities.'),
     'treatments': dict(
-        path='treatments.html',
+        path='treatments',
         title='Orthodontic Treatments in Bay City, MI — Braces, Clear Aligners &amp; More',
         desc='Braces, clear aligners, early treatment, teen and adult orthodontics, surgery, '
              'retainers, 3D imaging and emergency care — with insurance and payment plans.'),
     'quiz': dict(
-        path='quiz.html',
+        path='quiz',
         title='Smile Quiz — Where to Start | Uptown Orthodontics',
         desc='Not sure where to begin? Answer three quick questions and we will point you '
              'toward the right kind of orthodontic treatment. Bay City, MI.'),
     'reviews': dict(
-        path='reviews.html',
+        path='reviews',
         title='Patient Reviews — Uptown Orthodontics, Bay City MI',
         desc='What our patients say, and our Google rating. Read reviews of Uptown '
              'Orthodontics in Bay City, Michigan, and leave one of your own.'),

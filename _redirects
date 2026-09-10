@@ -1,0 +1,8 @@
+# Netlify's Pretty URLs serves /about as well as /about.html, so both returned
+# 200 and the same page was reachable at two URLs. Send the .html form to the
+# clean one so only one can be indexed and the canonical is unambiguous.
+/about.html        /about        301!
+/treatments.html   /treatments   301!
+/quiz.html         /quiz         301!
+/reviews.html      /reviews      301!
+/index.html        /             301!
