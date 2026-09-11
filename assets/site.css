@@ -360,7 +360,7 @@
   footer .mono { opacity: 0.5; }
   /* Full brand colors on purpose — people identify these by color before shape. */
   .social { display: flex; gap: 10px; margin-top: 6px; }
-  .social-link { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: -6px; border-radius: 12px; transition: transform 0.2s, background 0.2s; }
+  .social-link { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: -6px 0; border-radius: 12px; transition: transform 0.2s, background 0.2s; }
   .social-link:hover { transform: translateY(-2px); background: rgba(28,43,58,0.05); }
   .social-link svg { width: 28px; height: 28px; display: block; }
 
@@ -379,4 +379,12 @@
     .exterior-banner { background-image: url('/assets/img/exterior-1100.jpg') !important; }
     .hero-bg .slide[data-src="hero-1"] { background-image: url('/assets/img/hero-1-1200.jpg') !important; }
     .hero-bg .slide[data-src="hero-2"] { background-image: url('/assets/img/hero-2-1200.jpg') !important; }
+  }
+
+  /* Weave's chat button is fixed over the bottom ~118px of the viewport at max
+     z-index. Scrolled to the end of the page that is the footer, and it was
+     covering the social links entirely. Reserve the space rather than fighting a
+     third-party widget we do not control. */
+  @media (max-width: 700px) {
+    footer { padding-bottom: 140px; }
   }
