@@ -357,7 +357,12 @@
 
   footer { padding: 40px 0; border-top: 1px solid rgba(28,43,58,0.1); }
   footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-  footer .mono { opacity: 0.5; }
+  footer .mono { color: var(--ink-soft); font-size: 0.78rem; }
+  /* The address, phone and hours are the most-wanted details on a local
+     practice's site. At 0.5 opacity they measured 2.98:1 — below the 4.5 AA
+     needs, and the reason the footer read as faded. */
+  footer a.mono { color: var(--navy); font-weight: 600; }
+  footer a.mono:hover { color: var(--navy-dark); text-decoration: underline; }
   /* Full brand colors on purpose — people identify these by color before shape. */
   .social { display: flex; gap: 10px; margin-top: 6px; }
   .social-link { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: -6px 0; border-radius: 12px; transition: transform 0.2s, background 0.2s; }
