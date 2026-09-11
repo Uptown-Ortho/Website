@@ -130,7 +130,7 @@
   </div>
 
   <div class="card">
-    <div class="row"><h3>Keeping it going</h3><div class="amt">$240/year<small>starts January 2027</small></div></div>
+    <div class="row"><h3>Keeping it going</h3><div class="amt">$180/year<small>$15/month &middot; starts January 2027</small></div></div>
     <p>Four scheduled updates a year, plus support for anything wrong with the site. <b>The rest of 2026 is included</b>, so the first payment is January 2027 and each January after.</p>
     <details class="what">
       <summary>What that covers</summary>
@@ -167,7 +167,7 @@
     <div id="form">
       <label class="agree" for="agree">
         <input type="checkbox" id="agree">
-        <span>I have read the above and agree to <b>$3,000 at launch</b> and <b>$240 a year starting January 2027</b>.</span>
+        <span>I have read the above and agree to <b>$3,000 at launch</b> and <b>$180 a year &mdash; $15 a month &mdash; starting January 2027</b>.</span>
       </label>
 
       <div class="fields">
@@ -229,7 +229,7 @@
 </script>
 <script>
 (function () {
-  var KEY = 'uptown-proposal-accepted-v1';
+  var KEY = 'uptown-proposal-accepted-v2';
   var $ = function (id) { return document.getElementById(id); };
   var pad = $('pad'), ctx = pad.getContext('2d');
   var mode = 'draw', drawn = false;
@@ -328,7 +328,7 @@
       { dateStyle: 'long', timeStyle: 'short' });
 
     var body = 'I accept the website proposal for Uptown Orthodontics.\n\n'
-      + '$3,000 at launch\n$240 a year starting January 2027\n\n'
+      + '$3,000 at launch\n$180 a year ($15/month) starting January 2027\n\n'
       + 'Name: ' + rec.name + '\n'
       + (rec.role ? 'Role: ' + rec.role + '\n' : '')
       + 'Signed: ' + new Date(rec.at).toLocaleString() + '\n'
