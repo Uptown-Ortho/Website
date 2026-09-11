@@ -1,10 +1,11 @@
-# Pages are directories (about/index.html). Netlify serves that at /about and
-# strips a trailing slash, so /about is the canonical form.
+# Pages are directories (about/index.html), served at /about/ — measured, not
+# assumed: with no flat about.html present, Netlify answers /about/ with 200 and
+# 301s /about to it.
 #
-# Do NOT add flat about.html forwarder files alongside: Netlify resolves /about
-# to the flat file in preference to the directory, so the forwarder shadows the
-# real page and its redirect bounces back into itself.
-/about.html        /about        301!
-/treatments.html   /treatments   301!
-/quiz.html         /quiz         301!
-/reviews.html      /reviews      301!
+# Do NOT add flat about.html forwarders alongside. Netlify resolves /about to the
+# flat file in preference to the directory, which inverts the redirect and makes
+# the forwarder bounce into itself. That broke every nav link once already.
+/about.html        /about/        301!
+/treatments.html   /treatments/   301!
+/quiz.html         /quiz/         301!
+/reviews.html      /reviews/      301!
