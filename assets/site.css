@@ -127,6 +127,12 @@
   .hero-bg { position: absolute; inset: 0; z-index: 0; }
   .hero-bg .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.4s ease; }
   .hero-bg .slide.active { opacity: 1; }
+  /* background-position: center is wrong for hero-2. A phone hero is 375x771, so
+     cover keeps only the middle 21% of a 1400px-wide photo — and Dr. Collison
+     sits right of centre, so she was cropped out of her own slide entirely: an
+     arm at the edge and a draped patient. 70% keeps both faces. It suits the
+     desktop crop too, where the text sits over the dark left of the gradient. */
+  .hero-bg .slide[data-src="hero-2"] { background-position: 70% center; }
   .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(28,43,58,0.82) 0%, rgba(28,43,58,0.62) 42%, rgba(28,43,58,0.25) 75%); }
   .hero-dots { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; gap: 8px; }
   .hero-dots button { width: 22px; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.35); transition: background 0.3s; border: none; padding: 0; cursor: pointer; }
