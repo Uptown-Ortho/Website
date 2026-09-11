@@ -67,7 +67,7 @@
 
   /* NAV */
   /* Opaque, not frosted. At 90% the navy and ink sections bled through and the
-     bar composited to a cool grey (227,230,234) — the logo is a fixed-colour PNG
+     bar composited to a cool grey (227,230,234) — the logo is a fixed-color PNG
      and cannot follow, so it read as the logo changing fill on scroll. */
   nav { position: sticky; top: 0; z-index: 50; background: var(--paper); border-bottom: 1px solid rgba(28,43,58,0.08); }
   nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 78px; }
@@ -235,7 +235,7 @@
   .ba-cta { text-align: center; }
 
   /* TESTIMONIALS */
-  /* Dark sections: headings must follow the section's own colour, not the global
+  /* Dark sections: headings must follow the section's own color, not the global
      ink from the h1,h2,h3 rule. This was patched one section at a time and missed
      on .testimonials, whose H2 rendered ink-on-ink — exactly invisible. */
   .community-band h2, .community-band h3,
@@ -358,7 +358,7 @@
   footer { padding: 40px 0; border-top: 1px solid rgba(28,43,58,0.1); }
   footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
   footer .mono { opacity: 0.5; }
-  /* Full brand colours on purpose — people identify these by colour before shape. */
+  /* Full brand colors on purpose — people identify these by color before shape. */
   .social { display: flex; gap: 10px; margin-top: 6px; }
   .social-link { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: -6px; border-radius: 12px; transition: transform 0.2s, background 0.2s; }
   .social-link:hover { transform: translateY(-2px); background: rgba(28,43,58,0.05); }
