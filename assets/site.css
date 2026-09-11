@@ -317,7 +317,10 @@
   @media (max-width: 900px) { .fin-grid { grid-template-columns: repeat(2,1fr); } }
 
   /* OFFICE */
-  .office-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; }
+  /* Three office photos, so a 2-column grid would leave a hole. */
+  .office-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+  @media (max-width: 860px) { .office-grid { grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 560px) { .office-grid { grid-template-columns: 1fr; } }
   .office-grid .photo-ph { aspect-ratio: 4/3; overflow: hidden; }
   .office-grid .photo-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
   @media (max-width: 700px) { .office-grid { grid-template-columns: 1fr; } }
