@@ -1,7 +1,10 @@
-# Pages are directories now (about/index.html), so /about is the filesystem
-# rather than a host setting. These cover anything that linked the old form.
+# Pages are directories (about/index.html). Netlify serves that at /about and
+# strips a trailing slash, so /about is the canonical form.
+#
+# Do NOT add flat about.html forwarder files alongside: Netlify resolves /about
+# to the flat file in preference to the directory, so the forwarder shadows the
+# real page and its redirect bounces back into itself.
 /about.html        /about        301!
 /treatments.html   /treatments   301!
 /quiz.html         /quiz         301!
 /reviews.html      /reviews      301!
-/index.html        /             301!

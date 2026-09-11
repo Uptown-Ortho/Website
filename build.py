@@ -23,22 +23,22 @@ PAGES = {
              'Invisalign providers, treating kids, teens and adults. Free consultation, 989.894.2929.',
         jsonld=True),
     'about': dict(
-        path='about/',
+        path='about',
         title='Meet Our Doctors &amp; Team — Uptown Orthodontics, Bay City MI',
         desc='Dr. Brandan LeBourdais and Dr. Hannah Collison, and the team you will see at '
              'every visit. AAO member orthodontists serving Bay City and the Tri-Cities.'),
     'treatments': dict(
-        path='treatments/',
+        path='treatments',
         title='Orthodontic Treatments in Bay City, MI — Braces, Clear Aligners &amp; More',
         desc='Braces, clear aligners, early treatment, teen and adult orthodontics, surgery, '
              'retainers, 3D imaging and emergency care — with insurance and payment plans.'),
     'quiz': dict(
-        path='quiz/',
+        path='quiz',
         title='Smile Quiz — Where to Start | Uptown Orthodontics',
         desc='Not sure where to begin? Answer three quick questions and we will point you '
              'toward the right kind of orthodontic treatment. Bay City, MI.'),
     'reviews': dict(
-        path='reviews/',
+        path='reviews',
         title='Patient Reviews — Uptown Orthodontics, Bay City MI',
         desc='What our patients say, and our Google rating. Read reviews of Uptown '
              'Orthodontics in Bay City, Michigan, and leave one of your own.'),
@@ -144,29 +144,6 @@ def asset_version(name: str) -> str:
 
 
 
-def write_html_stub(page: str, slug: str) -> None:
-    """Leave a <page>.html that forwards to /<page>/.
-
-    Layered on purpose. On Netlify the `301!` in _redirects wins and serves a real
-    redirect. On a host that ignores _redirects — a move to Cloudflare, S3, a
-    plain nginx, or someone opening the files locally — this file is still there
-    and forwards client-side. Either way an old bookmark or an indexed
-    /about.html keeps working, with no host feature required.
-
-    noindex so it never competes with the page it points at.
-    """
-    (ROOT / f'{page}.html').write_text(
-        '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n'
-        f'<title>Redirecting to /{slug}</title>\n'
-        '<meta name="robots" content="noindex">\n'
-        f'<link rel="canonical" href="https://uptown-ortho.com/{slug}">\n'
-        f'<meta http-equiv="refresh" content="0; url=/{slug}">\n'
-        f'<script>location.replace("/{slug}" + location.hash);</script>\n'
-        '</head>\n<body>\n'
-        f'<p>This page moved to <a href="/{slug}">/{slug}</a>.</p>\n'
-        '</body>\n</html>\n', encoding='utf-8')
-
-
 def build() -> int:
     layout = (SRC / 'layout.html').read_text(encoding='utf-8')
     cssv, jsv = asset_version('site.css'), asset_version('site.js')
@@ -198,17 +175,13 @@ def build() -> int:
         # Not just quote-preceded: srcset entries are comma-separated, so match
         # any bare 'assets/' that is not already rooted.
         html = re.sub(r'(?<![/\w-])assets/', '/assets/', html)
-        html = re.sub(r'(?<=href=")(?!https?:|mailto:|tel:|sms:|#|/)([a-z-]+)\.html', r'/\1/', html)
+        html = re.sub(r'(?<=href=")(?!https?:|mailto:|tel:|sms:|#|/)([a-z-]+)\.html', r'/\1', html)
         html = html.replace('href="/index"', 'href="/"')
         out = ROOT / 'index.html' if page == 'index' else ROOT / page / 'index.html'
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(html, encoding='utf-8')
         rel = out.relative_to(ROOT)
-        note = ''
-        if page != 'index':
-            write_html_stub(page, meta['path'])
-            note = f'  (+ {page}.html forwarder)'
-        print(f'  {str(rel):24} {len(html)//1024:>3} KB{note}')
+        print(f'  {str(rel):24} {len(html)//1024:>3} KB')
         written += 1
     print(f'{written} pages built')
     return 0
