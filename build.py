@@ -143,6 +143,30 @@ def asset_version(name: str) -> str:
     return hashlib.sha256(data).hexdigest()[:8]
 
 
+
+def write_html_stub(page: str, slug: str) -> None:
+    """Leave a <page>.html that forwards to /<page>/.
+
+    Layered on purpose. On Netlify the `301!` in _redirects wins and serves a real
+    redirect. On a host that ignores _redirects — a move to Cloudflare, S3, a
+    plain nginx, or someone opening the files locally — this file is still there
+    and forwards client-side. Either way an old bookmark or an indexed
+    /about.html keeps working, with no host feature required.
+
+    noindex so it never competes with the page it points at.
+    """
+    (ROOT / f'{page}.html').write_text(
+        '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n'
+        f'<title>Redirecting to /{slug}</title>\n'
+        '<meta name="robots" content="noindex">\n'
+        f'<link rel="canonical" href="https://uptown-ortho.com/{slug}">\n'
+        f'<meta http-equiv="refresh" content="0; url=/{slug}">\n'
+        f'<script>location.replace("/{slug}" + location.hash);</script>\n'
+        '</head>\n<body>\n'
+        f'<p>This page moved to <a href="/{slug}">/{slug}</a>.</p>\n'
+        '</body>\n</html>\n', encoding='utf-8')
+
+
 def build() -> int:
     layout = (SRC / 'layout.html').read_text(encoding='utf-8')
     cssv, jsv = asset_version('site.css'), asset_version('site.js')
@@ -180,7 +204,11 @@ def build() -> int:
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(html, encoding='utf-8')
         rel = out.relative_to(ROOT)
-        print(f'  {str(rel):24} {len(html)//1024:>3} KB')
+        note = ''
+        if page != 'index':
+            write_html_stub(page, meta['path'])
+            note = f'  (+ {page}.html forwarder)'
+        print(f'  {str(rel):24} {len(html)//1024:>3} KB{note}')
         written += 1
     print(f'{written} pages built')
     return 0
