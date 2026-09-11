@@ -1,6 +1,5 @@
-# Netlify's Pretty URLs serves /about as well as /about.html, so both returned
-# 200 and the same page was reachable at two URLs. Send the .html form to the
-# clean one so only one can be indexed and the canonical is unambiguous.
+# Pages are directories now (about/index.html), so /about is the filesystem
+# rather than a host setting. These cover anything that linked the old form.
 /about.html        /about        301!
 /treatments.html   /treatments   301!
 /quiz.html         /quiz         301!

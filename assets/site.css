@@ -370,12 +370,12 @@
   /* CSS backgrounds cannot take a srcset, so pick by media query instead. A phone
      was pulling the full 1600px banner and the full-width hero slides. */
   @media (max-width: 700px) {
-    .exterior-banner { background-image: url('assets/img/exterior-700.jpg') !important; }
-    .hero-bg .slide[data-src="hero-1"] { background-image: url('assets/img/hero-1-800.jpg') !important; }
-    .hero-bg .slide[data-src="hero-2"] { background-image: url('assets/img/hero-2-800.jpg') !important; }
+    .exterior-banner { background-image: url('/assets/img/exterior-700.jpg') !important; }
+    .hero-bg .slide[data-src="hero-1"] { background-image: url('/assets/img/hero-1-800.jpg') !important; }
+    .hero-bg .slide[data-src="hero-2"] { background-image: url('/assets/img/hero-2-800.jpg') !important; }
   }
   @media (min-width: 701px) and (max-width: 1200px) {
-    .exterior-banner { background-image: url('assets/img/exterior-1100.jpg') !important; }
-    .hero-bg .slide[data-src="hero-1"] { background-image: url('assets/img/hero-1-1200.jpg') !important; }
-    .hero-bg .slide[data-src="hero-2"] { background-image: url('assets/img/hero-2-1200.jpg') !important; }
+    .exterior-banner { background-image: url('/assets/img/exterior-1100.jpg') !important; }
+    .hero-bg .slide[data-src="hero-1"] { background-image: url('/assets/img/hero-1-1200.jpg') !important; }
+    .hero-bg .slide[data-src="hero-2"] { background-image: url('/assets/img/hero-2-1200.jpg') !important; }
   }

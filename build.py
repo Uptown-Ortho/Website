@@ -168,9 +168,19 @@ def build() -> int:
         if left:
             print(f'ERROR: {page}.html still has placeholders: {left}', file=sys.stderr)
             return 1
-        out = ROOT / f'{page}.html'
+        # Home stays at the root; the rest become <name>/index.html so the clean
+        # URL is the filesystem, not a Netlify setting. Asset and link references
+        # are root-relative for the same reason.
+        # Not just quote-preceded: srcset entries are comma-separated, so match
+        # any bare 'assets/' that is not already rooted.
+        html = re.sub(r'(?<![/\w-])assets/', '/assets/', html)
+        html = re.sub(r'(?<=href=")(?!https?:|mailto:|tel:|sms:|#|/)([a-z-]+)\.html', r'/\1', html)
+        html = html.replace('href="/index"', 'href="/"')
+        out = ROOT / 'index.html' if page == 'index' else ROOT / page / 'index.html'
+        out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(html, encoding='utf-8')
-        print(f'  {out.name:18} {len(html)//1024:>3} KB')
+        rel = out.relative_to(ROOT)
+        print(f'  {str(rel):24} {len(html)//1024:>3} KB')
         written += 1
     print(f'{written} pages built')
     return 0
