@@ -24,6 +24,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400..600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<!-- Content that fades in on scroll starts at opacity:0 and is revealed by JS.
+     Scope that hidden state to .js so a browser without JavaScript -- or one
+     where site.js fails to load -- renders the page fully visible instead of
+     blank. This runs before site.js, so a failed fetch of site.js is covered
+     too, not just a disabled-JS setting. -->
+<script>document.documentElement.classList.add('js')</script>
 <link rel="stylesheet" href="assets/site.css?v={{CSSV}}">
 <script defer src="https://book.getweave.com/text-connect/311687a8-40cc-4693-926a-d9f46b904d2a/widget.js"></script>
 </head>

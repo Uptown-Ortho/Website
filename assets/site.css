@@ -30,17 +30,23 @@
   h1, h2, h3, .display { font-family: 'Lora', Georgia, serif; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
   .mono { font-family: 'IBM Plex Mono', monospace; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.7rem; }
   a { color: inherit; text-decoration: none; }
-  img { max-width: 100%; display: block; }
+  img { max-width: 100%; height: auto; display: block; }
   .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
-  section { padding: 96px 0; }
-  .section-head { max-width: 620px; margin: 0 auto 56px; text-align: center; }
+  /* Spacing and type scale with the viewport rather than sitting at a desktop
+     value until some breakpoint happens to catch them. Every one of these was
+     a fixed px figure with no mobile counterpart, which is why section gaps
+     were 192px on a phone. clamp(floor, fluid, ceiling): the middle term does
+     the work, the outer two stop it going silly at either extreme. */
+  section { padding: clamp(40px, 7.5vw, 96px) 0; }
+  .section-head { max-width: 620px; margin: 0 auto clamp(26px, 4.5vw, 56px); text-align: center; }
   .section-head .mono { color: var(--coral-text); display: block; margin-bottom: 12px; }
   .section-head h1,
-  .section-head h2 { font-size: 2.3rem; margin-bottom: 12px; }
+  .section-head h2 { font-size: clamp(1.65rem, 1.05rem + 2.6vw, 2.3rem); margin-bottom: 12px; }
   .section-head p { color: var(--ink-soft); font-size: 1rem; }
 
   /* fade-in on scroll */
-  .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  /* Only hide it when JavaScript is actually present to bring it back. */
+  .js .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
   .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
   /* PHOTO PLACEHOLDER SYSTEM */
@@ -81,10 +87,19 @@
      around. Opens on hover with a pointer, on click/Enter otherwise, so it works
      on touch and by keyboard. */
   .nav-item { position: relative; display: flex; align-items: center; }
-  .nav-top { font: inherit; font-size: 0.9rem; font-weight: 500; color: var(--navy); background: none; border: 0; padding: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+  /* 22px tall without padding, under the 24px minimum. The mobile rule below
+     sets its own padding and still wins. */
+  .nav-top { font: inherit; font-size: 0.9rem; font-weight: 500; color: var(--navy); background: none; border: 0; padding: 7px 2px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
   .nav-top::after { content: ''; width: 5px; height: 5px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translate(-1px,-1px); transition: transform 0.2s; }
   .nav-item[data-open] .nav-top::after { transform: rotate(-135deg) translate(-2px,-2px); }
   .nav-sub { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); min-width: 210px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 8px; box-shadow: 0 16px 40px rgba(28,43,58,0.14); display: none; flex-direction: column; gap: 2px; margin-top: 10px; }
+  /* The panel sits 10px below the trigger, and that margin is OUTSIDE its hit
+     box -- so moving the pointer down from "About Us" crossed 10px belonging to
+     neither element, fired mouseleave on .nav-item, and the menu closed before
+     the cursor arrived. This transparent bridge spans the gap. Because .nav-sub
+     is a DOM descendant of .nav-item, hovering the bridge keeps the pointer
+     "inside" the item and mouseleave never fires. */
+  .nav-sub::before { content: ''; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
   .nav-item[data-open] .nav-sub { display: flex; }
   .nav-sub a { padding: 10px 14px; border-radius: 9px; font-size: 0.9rem; white-space: nowrap; }
   .nav-sub a:hover, .nav-sub a:focus-visible { background: var(--tint); }
@@ -135,19 +150,23 @@
   .hero-bg .slide[data-src="hero-2"] { background-position: 70% center; }
   .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(28,43,58,0.82) 0%, rgba(28,43,58,0.62) 42%, rgba(28,43,58,0.25) 75%); }
   .hero-dots { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; gap: 8px; }
-  .hero-dots button { width: 22px; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.35); transition: background 0.3s; border: none; padding: 0; cursor: pointer; }
-  .hero-dots button.active { background: var(--coral); }
+  /* The visual dot stays 22x3; padding + content-box grows the TOUCH target to
+     30x31 without changing how it looks. WCAG 2.5.8 wants 24x24 minimum, and a
+     3px-tall control is unhittable on a phone. Kept narrower than the 8px gap
+     allows so neighbouring hit areas never overlap. */
+  .hero-dots button { box-sizing: content-box; width: 22px; height: 3px; padding: 14px 4px; background-clip: content-box; border-radius: 2px; background-color: rgba(255,255,255,0.35); transition: background-color 0.3s; border: none; cursor: pointer; }
+  .hero-dots button.active { background-color: var(--coral); }
   .hero .wrap { position: relative; z-index: 1; padding: 110px 32px; display: block; }
   .eyebrow { display: flex; align-items: center; gap: 10px; color: var(--coral); margin-bottom: 20px; }
   .eyebrow-line { width: 26px; height: 1px; background: var(--coral); }
-  .hero h1 { font-size: 3.3rem; line-height: 1.05; margin-bottom: 20px; color: var(--white); max-width: 640px; }
+  .hero h1 { font-size: clamp(2.1rem, 1.1rem + 4.4vw, 3.3rem); line-height: 1.05; margin-bottom: 20px; color: var(--white); max-width: 640px; }
   .hero p.lead { font-size: 1.08rem; color: rgba(248,247,243,0.82); max-width: 460px; margin-bottom: 30px; }
   .trust-badges { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 30px; }
   .trust-badges .badge { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: rgba(248,247,243,0.85); font-weight: 500; }
   .trust-badges .stars { color: var(--coral); letter-spacing: 1px; }
   .badge-link { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: rgba(248,247,243,0.5); transition: text-decoration-color 0.2s; }
   .badge-link:hover { text-decoration-color: var(--coral); }
-  @media (max-width: 900px) { .hero h1 { font-size: 2.3rem; } .hero { min-height: 560px; } }
+  @media (max-width: 900px) { .hero { min-height: 560px; } }
 
   /* TRUST RIBBON */
   .trust-ribbon { background: var(--blue-tint); border-top: 1px solid rgba(28,43,58,0.06); border-bottom: 1px solid rgba(28,43,58,0.06); padding: 40px 0; }
@@ -158,7 +177,18 @@
   a.trust-item { cursor: pointer; }
   a.trust-item .icon { transition: transform 0.2s, box-shadow 0.2s; }
   a.trust-item:hover .icon { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(28,43,58,0.12); }
-  @media (max-width: 860px) { .trust-ribbon .wrap { grid-template-columns: repeat(2,1fr); } }
+  /* Five items never divide into two columns: the fifth is stranded alone on its
+     own row, which is what it did at every width from 700 to 860 as well. Below
+     860 go to a single column with the icon beside the label, the same shape the
+     treatment cards use, so five rows stay compact instead of becoming five
+     stacked blocks. Above it, five columns divide exactly. */
+  @media (max-width: 860px) {
+    .trust-ribbon { padding: 26px 0; }
+    .trust-ribbon .wrap { grid-template-columns: 1fr; gap: 12px; text-align: left; }
+    .trust-item { display: flex; align-items: center; gap: 13px; }
+    .trust-item .icon { width: 38px; height: 38px; margin: 0; flex: none; }
+    .trust-item .t-label { font-size: 0.9rem; }
+  }
 
   /* DOCTOR */
   .doctor-photo-full { aspect-ratio: 2.06/1; width: 100%; margin-bottom: 44px; overflow: hidden; }
@@ -169,21 +199,27 @@
   .doc-head { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
   .doc-avatar { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid var(--white); box-shadow: 0 4px 14px rgba(28,43,58,0.14); }
   .doc-bio .mono { color: var(--coral-text); margin-bottom: 4px; display: block; }
-  .doc-bio h2 { font-size: 1.7rem; margin-bottom: 4px; }
+  .doc-bio h2 { font-size: clamp(1.35rem, 1.05rem + 1.3vw, 1.7rem); margin-bottom: 4px; }
   .doc-bio .creds { color: var(--navy); font-weight: 600; font-size: 0.88rem; margin-bottom: 6px; }
   .doc-bio .memberships { font-size: 0.76rem; color: var(--ink-soft); line-height: 1.5; margin-bottom: 14px; }
-  .doc-bio p.bio { color: var(--ink-soft); margin-bottom: 16px; font-size: 0.95rem; }
+  .doc-bio p.bio { color: var(--ink-soft); margin-bottom: 12px; font-size: 0.95rem; }
+  .doc-bio p.bio:last-of-type { margin-bottom: 16px; }
   .doc-bio .doctor-quote { border-left: 3px solid var(--coral); padding-left: 16px; font-family: 'Lora', Georgia, serif; font-size: 1.02rem; color: var(--ink); }
   .doctor-cta { text-align: center; margin-top: 40px; }
 
   /* Team cards use initials until real headshots arrive — swap .team-initials for
      an <img class="team-photo"> and the layout holds. */
-  .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 22px; }
+  .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 22px; }
   .team-card { background: var(--white); border-radius: 18px; padding: 26px 18px; text-align: center; border: 1px solid rgba(28,43,58,0.07); }
-  .team-initials { display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%; background: var(--navy); color: var(--white); font-family: 'Lora', Georgia, serif; font-size: 1.5rem; }
+  .team-initials { display: flex; align-items: center; justify-content: center; width: 104px; height: 104px; margin: 0 auto 16px; border-radius: 50%; background: var(--navy); color: var(--white); font-family: 'Lora', Georgia, serif; font-size: 2.3rem; }
   .team-card h3 { font-size: 1.05rem; margin-bottom: 2px; }
   .team-card p { font-size: 0.82rem; color: var(--ink-soft); }
-  .team-photo { width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%; object-fit: cover; display: block; }
+  /* 104px, not 64: at avatar size the headshots read as placeholders rather
+     than portraits. Source files are 640px square, so this is still well
+     inside them at 2x. object-position favours the top so the crop keeps
+     faces rather than centring on collars. */
+  .team-photo { width: 104px; height: 104px; margin: 0 auto 16px; border-radius: 50%;
+    object-fit: cover; object-position: center top; display: block; }
   /* Only people with a bio become interactive — everyone else looks unchanged. */
   .team-card.has-bio { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
   .team-card.has-bio:hover, .team-card.has-bio:focus-visible { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(28,43,58,0.12); }
@@ -204,9 +240,14 @@
 
   #community { padding: 0; }
   .community-band { display: flex; align-items: center; gap: 32px; background: var(--navy); color: var(--white); border-radius: 24px; padding: 40px 44px; margin: 72px 0 0; }
-  .community-band h2 { font-size: 1.7rem; margin: 6px 0 10px; }
+  .community-band h2 { font-size: clamp(1.35rem, 1.05rem + 1.3vw, 1.7rem); margin: 6px 0 10px; }
   .community-band p { opacity: 0.85; font-size: 0.95rem; max-width: 62ch; }
   .community-band .mono { color: var(--coral-text); }
+  /* The section had no padding and leaned entirely on .community-band's top
+     margin for spacing, so nothing closed the bottom: the photos ran right into
+     the navy CTA below and looked clipped by it. Matches the 72px above. */
+  #community { padding-bottom: 72px; }
+  @media (max-width: 700px) { #community { padding-bottom: 48px; } }
   .community-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 22px; }
   .community-photos img { width: 100%; height: 100%; aspect-ratio: 1200/1069; object-fit: cover; border-radius: 18px; display: block; }
   @media (max-width: 700px) { .community-photos { grid-template-columns: 1fr; } }
@@ -219,13 +260,30 @@
   .treat-card { background: var(--white); border-radius: 20px; padding: 30px 26px; border: 1px solid rgba(28,43,58,0.07); transition: transform 0.25s ease, box-shadow 0.25s ease; }
   .treat-card:hover { transform: translateY(-6px); box-shadow: 0 18px 34px rgba(28,43,58,0.1); }
   .treat-card .t-icon { width: 46px; height: 46px; border-radius: 14px; background: var(--blue-tint); color: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 18px; }
-  .treat-card h3 { font-size: 1.08rem; margin-bottom: 8px; }
+  /* Sampled from the wordmark: the blue in "Uptown" is #2a5194, which is
+     already --navy. */
+  .treat-card h2, .treat-card h3 { font-size: 1.08rem; margin-bottom: 8px; color: var(--navy); }
   .treat-card p { font-size: 0.88rem; color: var(--ink-soft); margin-bottom: 16px; min-height: 58px; }
+  /* On a phone the stacked icon / title / copy layout wastes the whole width on
+     a 46px icon sitting alone on its own row, and min-height on the copy adds
+     dead space under the short ones. Put the title beside the icon and let the
+     description run full width beneath. */
+  @media (max-width: 700px) {
+    .treat-card { display: grid; grid-template-columns: auto 1fr; column-gap: 14px;
+      align-items: center; padding: 22px 20px; }
+    .treat-card .t-icon { grid-column: 1; grid-row: 1; margin-bottom: 0; }
+    .treat-card h2, .treat-card h3 { grid-column: 2; grid-row: 1; margin-bottom: 0; }
+    .treat-card p { grid-column: 1 / -1; grid-row: 2; margin: 12px 0 0; min-height: 0; }
+  }
   @media (max-width: 980px) { .treat-grid { grid-template-columns: repeat(2,1fr); } }
   @media (max-width: 560px) { .treat-grid { grid-template-columns: 1fr; } }
 
   /* BEFORE AFTER */
   .ba-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 28px; margin-bottom: 40px; }
+  /* Side by side at 2 columns a phone gets 142px-wide sliders: the teeth are
+     unreadable and the BEFORE/AFTER tags collide. One per row below 560px,
+     matching .treat-grid and .office-grid. */
+  @media (max-width: 560px) { .ba-grid { grid-template-columns: 1fr; } }
   .ba-slider { position: relative; aspect-ratio: 4/3; border-radius: 20px; overflow: hidden; cursor: ew-resize; user-select: none; box-shadow: 0 14px 34px rgba(28,43,58,0.12); }
   .ba-before, .ba-after { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--white); font-family: 'Lora', Georgia, serif; }
   .ba-before { background: linear-gradient(155deg,#9aa7b8,#6b7789); overflow: hidden; }
@@ -234,7 +292,13 @@
   .ba-tag { position: absolute; top: 16px; padding: 6px 14px; border-radius: 100px; font-family:'IBM Plex Mono',monospace; font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; background: rgba(0,0,0,0.35); color: var(--white); }
   .ba-before .ba-tag { left: 16px; }
   .ba-after .ba-tag { right: 16px; }
-  .ba-handle { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--white); left: 50%; transform: translateX(-50%); box-shadow: 0 0 0 3px rgba(255,255,255,0.3); }
+  /* The grab area is 44px wide and transparent; the visible 3px line moved to
+     ::before so the handle looks identical but can actually be hit, and now
+     that it is focusable its box is a real target rather than a hairline. */
+  .ba-handle { position: absolute; top: 0; bottom: 0; width: 44px; background: transparent; left: 50%; transform: translateX(-50%); }
+  .ba-handle::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 3px; background: var(--white); box-shadow: 0 0 0 3px rgba(255,255,255,0.3); }
+  /* The handle is keyboard-operable now, so it needs a visible focus ring. */
+  .ba-handle:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
   .ba-handle::after { content: '↔'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 40px; height: 40px; background: var(--white); color: var(--navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
   .ba-quote { margin-top: 16px; font-size: 0.92rem; color: var(--ink-soft); font-style: italic; }
   .ba-quote strong { font-style: normal; color: var(--ink); }
@@ -256,12 +320,18 @@
      number and --fill together — see the rating note in the README. */
   .star-rating { position: relative; display: inline-block; line-height: 1; white-space: nowrap; }
   .star-rating .sr-track::before, .star-rating .sr-fill::before { content: '\2605\2605\2605\2605\2605'; }
-  .star-rating .sr-track { opacity: 0.28; }
+  /* The unfilled portion has to read, or a 4.8 looks like a 5. */
+  .star-rating .sr-track { opacity: 0.38; }
   .star-rating .sr-fill { position: absolute; left: 0; top: 0; overflow: hidden; color: var(--coral); width: var(--fill, 100%); }
 
   .rating-banner { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 28px; }
-  .rating-banner .g-num { font-family: 'Lora', Georgia, serif; font-size: 2.4rem; line-height: 1; }
-  .rating-banner .star-rating { color: var(--coral); font-size: 1.4rem; letter-spacing: 2px; }
+  .rating-banner .g-num { font-family: 'Lora', Georgia, serif; font-size: clamp(1.8rem, 1.3rem + 2.2vw, 2.4rem); line-height: 1; }
+  /* No letter-spacing: --fill is a percentage of the element's width, and the
+     trailing space after each glyph makes that percentage lie. With 2px of it
+     a 96% fill covered 87% of the fifth star instead of 80%, so 4.8 rendered
+     as very nearly 5. Without it, 96% is exactly 4.8 glyphs. Scale with
+     font-size instead. */
+  .rating-banner .star-rating { color: var(--coral); font-size: 1.5rem; }
   .rating-banner .g-sub { font-size: 0.82rem; opacity: 0.6; margin-top: 4px; }
   .review-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
   .review-note { text-align: center; font-size: 0.8rem; opacity: 0.55; margin-bottom: 34px; }
@@ -279,8 +349,9 @@
   .t-card p.body::after  { content: '\201D'; margin-left: 1px; }
   .t-card .who { font-size: 0.82rem; opacity: 0.55; }
   .car-dots { display: flex; justify-content: center; gap: 8px; margin-top: 24px; }
-  .car-dots button { width: 8px; height: 8px; border-radius: 50%; border: none; background: rgba(248,247,243,0.3); cursor: pointer; padding:0; }
-  .car-dots button.active { background: var(--coral); width: 22px; border-radius: 5px; transition: all 0.2s; }
+  /* Same treatment: 8x8 dot, 24x24 touch target. */
+  .car-dots button { box-sizing: content-box; width: 8px; height: 8px; padding: 8px; background-clip: content-box; border-radius: 50%; border: none; background-color: rgba(248,247,243,0.3); cursor: pointer; }
+  .car-dots button.active { background-color: var(--coral); width: 22px; border-radius: 9px; transition: background-color 0.2s, width 0.2s; }
 
   /* FINANCING */
   /* SMILE QUIZ */
@@ -296,13 +367,26 @@
   .quiz-step.active { display: flex; animation: qfade 0.35s ease; }
   @keyframes qfade { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: translateX(0); } }
   .quiz-step .q-label { font-size: 0.78rem; color: var(--coral-text); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
-  .quiz-step h3 { font-size: 1.5rem; margin-bottom: 22px; }
+  .quiz-step h2, .quiz-step h3 { font-size: 1.5rem; margin-bottom: 22px; }
   .quiz-options { display: grid; gap: 12px; margin-bottom: auto; }
+  /* 44px/40px padding on a 326px card leaves only 246px for the question, and
+     the 380px min-height (there so the card does not jump between steps with
+     different option counts) then sits mostly empty. Tighten both on a phone;
+     min-height is re-set to the tallest step at this width, measured. */
+  @media (max-width: 700px) {
+    .quiz-card { padding: 26px 20px; border-radius: 20px; min-height: 0; }
+    .quiz-step h2, .quiz-step h3 { font-size: 1.25rem; margin-bottom: 16px; }
+    .quiz-progress { margin-bottom: 20px; }
+    .quiz-opt { padding: 14px 16px; }
+    .quiz-nav { margin-top: 18px; }
+  }
   .quiz-opt { text-align: left; padding: 16px 20px; border-radius: 14px; border: 1.5px solid rgba(28,43,58,0.14); background: var(--paper); font-family: 'Inter', sans-serif; font-size: 0.98rem; font-weight: 600; color: var(--ink); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
   .quiz-opt:hover { border-color: var(--navy); }
   .quiz-opt.selected { border-color: var(--coral); background: var(--blue-tint); }
   .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 26px; }
-  .quiz-back { font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; background: none; border: none; }
+  /* Padded to a 44px-tall touch target; the negative margin keeps the visual
+     position unchanged. */
+  .quiz-back { font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; background: none; border: none; padding: 14px 10px; margin: -14px -10px; }
   .quiz-back:disabled { visibility: hidden; }
   .quiz-result { text-align: center; }
   .quiz-result .q-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--blue-tint); color: var(--coral); font-size: 1.6rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
@@ -321,6 +405,10 @@
   .fin-card h3 { font-size: 0.98rem; margin-bottom: 6px; }
   .fin-card p { font-size: 0.82rem; color: var(--ink-soft); }
   @media (max-width: 900px) { .fin-grid { grid-template-columns: repeat(2,1fr); } }
+  /* Two columns on a 375px phone leaves ~100px of text, wrapping body copy to
+     two or three words a line. One per row below 560px, matching the other
+     card grids. */
+  @media (max-width: 560px) { .fin-grid { grid-template-columns: 1fr; } }
 
   /* OFFICE */
   /* Three office photos, so a 2-column grid would leave a hole. */
@@ -335,16 +423,19 @@
   .location .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: stretch; }
   .loc-map { border-radius: 20px; overflow: hidden; min-height: 340px; border: 1px solid rgba(28,43,58,0.1); }
   .loc-map iframe { width: 100%; height: 100%; min-height: 340px; border: none; filter: grayscale(0.15); }
-  .loc-info h2 { font-size: 1.9rem; margin-bottom: 20px; }
+  .loc-info h2 { font-size: clamp(1.45rem, 1.1rem + 1.5vw, 1.9rem); margin-bottom: 20px; }
   .info-row { display: flex; gap: 16px; padding: 16px 0; border-top: 1px solid rgba(28,43,58,0.1); }
   .info-row:last-of-type { border-bottom: 1px solid rgba(28,43,58,0.1); margin-bottom: 26px; }
   .info-row .mono { min-width: 90px; color: var(--navy); }
   @media (max-width: 860px) { .location .wrap { grid-template-columns: 1fr; } }
 
   /* FINAL CTA */
-  .final-cta { background: linear-gradient(155deg, var(--navy), var(--navy-dark)); color: var(--white); text-align: center; }
-  .final-cta h2 { font-size: 2.6rem; margin-bottom: 14px; }
-  .final-cta p { opacity: 0.8; margin-bottom: 34px; font-size: 1.05rem; }
+  /* This block repeats on every page and was 1143px tall, 52% of the reviews
+     page. Trimmed about 20%: tighter padding than the global 96px, a smaller
+     heading, and a shorter form embed. */
+  .final-cta { background: linear-gradient(155deg, var(--navy), var(--navy-dark)); color: var(--white); text-align: center; padding: 54px 0; }
+  .final-cta h2 { font-size: clamp(1.35rem, 1.15rem + 0.9vw, 1.6rem); margin-bottom: 8px; }
+  .final-cta p { opacity: 0.8; margin-bottom: 18px; font-size: 1rem; }
   .final-cta .btn-primary { padding: 18px 38px; font-size: 1rem; }
 
   /* Kept in case the "Powered by Netlify" badge is ever re-enabled: it injects as a
@@ -353,16 +444,33 @@
      under Site configuration -> General -> Powered by Netlify badge. */
   #nl-badge-frame { left: 0 !important; right: auto !important; }
 
-  .weave-embed { position: relative; max-width: 440px; margin: 0 auto 26px; background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.24); }
+  .weave-embed { position: relative; max-width: 440px; margin: 0 auto 14px; background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.24); }
   /* Sits behind the iframe. Only visible if the embed is blocked or fails to load,
      which otherwise leaves a blank white card where the contact form should be. */
   .weave-fallback { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 28px; text-align: center; color: var(--ink); }
   .weave-fallback p { font-size: 0.9rem; color: var(--ink-soft); }
   .weave-fallback a { font-weight: 700; color: var(--coral); }
-  .weave-embed iframe { position: relative; z-index: 1; display: block; width: 100%; height: 640px; border: 0; }
-  @media (max-width: 480px) { .weave-embed iframe { height: 600px; } }
+  /* 580px is a measured floor, not a guess. Weave pins the Send Text button to
+     the bottom of whatever height it is given while the fields stay put, so
+     below 580 the button rides up over the consent checkbox: at 530 it
+     overlapped by 37px, at 560 by 7. 580 leaves a 13px gap at every width.
+     Do not shrink this without re-measuring the embed. */
+  .weave-embed iframe { position: relative; z-index: 1; display: block; width: 100%; height: 580px; border: 0; }
+  /* Same floor on a phone; the form's content height does not vary with width. */
+  @media (max-width: 480px) { .weave-embed iframe { height: 580px; } }
   .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .cta-hours { font-size: 0.85rem; opacity: 0.65; margin-top: 26px; }
+  /* The message form is 580px and cannot shrink (see the note on .weave-embed
+     iframe), so repeating it on every page made this block 910px tall and 46%
+     of the reviews page. Weave's floating button is on every page anyway, so
+     the full form earns its place once, on the home page where intent is
+     highest. Everywhere else: call, or open the same form in a tab. */
+  .final-cta.compact .weave-embed { display: none; }
+  .final-cta .cta-message { display: none; }
+  .final-cta.compact .cta-message { display: inline-block; }
+  .final-cta.compact .cta-actions { margin-top: 4px; }
+  .final-cta.compact .btn-secondary { border-color: rgba(248,247,243,0.5); color: var(--paper); }
+  .final-cta.compact .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+  .cta-hours { font-size: 0.85rem; opacity: 0.65; margin-top: 14px; margin-bottom: 0; }
 
   footer { padding: 40px 0; border-top: 1px solid rgba(28,43,58,0.1); }
   footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
@@ -385,14 +493,14 @@
   /* CSS backgrounds cannot take a srcset, so pick by media query instead. A phone
      was pulling the full 1600px banner and the full-width hero slides. */
   @media (max-width: 700px) {
-    .exterior-banner { background-image: url('/assets/img/exterior-700.jpg') !important; }
-    .hero-bg .slide[data-src="hero-1"] { background-image: url('/assets/img/hero-1-800.jpg') !important; }
-    .hero-bg .slide[data-src="hero-2"] { background-image: url('/assets/img/hero-2-800.jpg') !important; }
+    .exterior-banner { background-image: url('/assets/img/exterior-700.jpg?v=59c427b4') !important; }
+    .hero-bg .slide[data-src="hero-1"] { background-image: url('/assets/img/hero-1-800.jpg?v=26d06cf6') !important; }
+    .hero-bg .slide[data-src="hero-2"] { background-image: url('/assets/img/hero-2-800.jpg?v=b8896329') !important; }
   }
   @media (min-width: 701px) and (max-width: 1200px) {
-    .exterior-banner { background-image: url('/assets/img/exterior-1100.jpg') !important; }
-    .hero-bg .slide[data-src="hero-1"] { background-image: url('/assets/img/hero-1-1200.jpg') !important; }
-    .hero-bg .slide[data-src="hero-2"] { background-image: url('/assets/img/hero-2-1200.jpg') !important; }
+    .exterior-banner { background-image: url('/assets/img/exterior-1100.jpg?v=23118756') !important; }
+    .hero-bg .slide[data-src="hero-1"] { background-image: url('/assets/img/hero-1-1200.jpg?v=066d5402') !important; }
+    .hero-bg .slide[data-src="hero-2"] { background-image: url('/assets/img/hero-2-1200.jpg?v=80d456fc') !important; }
   }
 
   /* Weave's chat button is fixed over the bottom ~118px of the viewport at max
@@ -401,4 +509,157 @@
      third-party widget we do not control. */
   @media (max-width: 700px) {
     footer { padding-bottom: 140px; }
+  }
+
+  /* Her family photo, at the foot of her bio — matching where their old site put it. */
+  /* The joint banner is two slots, not one composed image, so Dr. Collison's
+     half can crossfade between her professional shot and the family photo the
+     way the practice's current site does. Each half is roughly square, half of
+     the 2.06 the composed banner used. The three sources are 0.67, 0.80 and
+     0.67, so the slot fixes the ratio and object-fit crops to it; the family
+     group needs the crop biased high or it loses faces. */
+  .doctor-photo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin-bottom: 44px; }
+  .doc-slot { position: relative; aspect-ratio: 1.03; border-radius: 18px;
+    overflow: hidden; background: var(--blue-tint); margin: 0; }
+  .doc-slot > img { width: 100%; height: 100%; object-fit: cover; display: block;
+    object-position: center 18%; }
+  .doc-slot > .doc-shot { position: absolute; inset: 0; opacity: 0; transition: opacity 0.9s ease;
+    object-position: center 20%; }
+  /* Biased further down the frame than the headshot: at 25% the crop cut the
+     children off mid-leg. 42% keeps the whole group with headroom to spare;
+     past about 50% the top of his head reaches the edge. */
+  .doc-slot > .doc-shot-family { object-position: center 42%; }
+  /* No JS: the professional shot stays, which is the one that belongs here. */
+  .doc-slot > .doc-shot.is-on { opacity: 1; }
+
+  .doc-rotator-dots { position: absolute; left: 0; right: 0; bottom: 10px;
+    display: flex; justify-content: center; gap: 6px; }
+  .doc-rotator-dots button { box-sizing: content-box; width: 8px; height: 8px; padding: 9px;
+    background-clip: content-box; border-radius: 50%; border: 0; cursor: pointer;
+    background-color: rgba(255,255,255,0.55); transition: background-color 0.2s; }
+  .doc-rotator-dots button[aria-pressed="true"] { background-color: var(--white); }
+  .doc-rotator-dots button:focus-visible { outline: 2px solid var(--white); outline-offset: 1px; }
+
+  @media (max-width: 560px) {
+    .doctor-photo-pair { gap: 8px; margin-bottom: 32px; }
+    .doc-slot { border-radius: 14px; }
+  }
+
+  /* Honour a reduced-motion preference. The site has scroll fade-ins, a hero
+     crossfade, a carousel and a dozen hover transitions, and none of it was
+     opt-out. Vestibular disorders aside, this is also what a user who finds
+     motion distracting has already asked their OS for. Elements still arrive —
+     the IntersectionObserver still adds .in-view, it just does not animate. The
+     carousel stops advancing entirely; see site.js. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Patients print directions, hours and the phone number. Default print output
+     wastes a page on the nav, the hero photo and the chat widget, and prints
+     link text with no destination. */
+  @media print {
+    nav, .nav-links, .hero-bg, .hero-dots, .exterior-banner, .car-dots,
+    .final-cta, .skip-link, [class*="weave"], iframe { display: none !important; }
+    *, *::before, *::after { background: transparent !important; color: #000 !important;
+      box-shadow: none !important; text-shadow: none !important; }
+    body { font-size: 12pt; }
+    a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; word-break: break-all; }
+    a[href^="tel:"]::after, a[href^="mailto:"]::after { content: ""; }
+    .fade-up, .js .fade-up { opacity: 1 !important; transform: none !important; }
+    section, .doctor, .team-card { page-break-inside: avoid; }
+  }
+
+  /* FAQ. Tabs rather than one long scroll: three groups stacked made the page
+     read as a pile of separate sections with dead space between them, and the
+     jump links looked like tabs but scrolled, which is worse than either.
+     Only .faq-tabs is JS-dependent -- without it every panel is simply visible,
+     which is also what print gets. */
+  .faq-head { background: var(--blue-tint); padding: 62px 0 42px; }
+  .faq-head .section-head { margin-bottom: 0; }
+  .faq-head .section-head p a { color: var(--navy); font-weight: 600;
+    border-bottom: 1.5px solid rgba(42,81,148,0.35); }
+
+  .faq-body { padding: 44px 0 72px; }
+  .faq-card { max-width: 800px; margin: 0 auto; background: var(--white);
+    border: 1px solid rgba(28,43,58,0.07); border-radius: 22px;
+    padding: 10px 32px 14px; }
+
+  /* Segmented control across the top of the card. Hidden until JS wires it up. */
+  .faq-tabs { display: none; gap: 6px; padding: 14px 0 4px; flex-wrap: wrap; }
+  .js .faq-tabs { display: flex; }
+  .faq-tab { font: inherit; font-size: 0.88rem; font-weight: 600; color: var(--ink-soft);
+    background: none; border: 0; border-radius: 100px; padding: 10px 16px; cursor: pointer;
+    transition: background 0.18s, color 0.18s; }
+  .faq-tab:hover { background: var(--blue-tint); color: var(--navy); }
+  .faq-tab[aria-selected="true"] { background: var(--navy); color: var(--white); }
+  .faq-tab:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
+
+  .faq-panel { padding-bottom: 4px; }
+  /* With tabs live the tab label already names the panel, so the heading inside
+     it is the same words twice. Without JS it is the only thing grouping them. */
+  .faq-group-head { display: flex; align-items: center; gap: 13px; padding: 18px 0 6px; }
+  .js .faq-group-head { display: none; }
+  .faq-group-head .t-icon { width: 42px; height: 42px; border-radius: 13px;
+    background: var(--blue-tint); color: var(--navy); display: flex;
+    align-items: center; justify-content: center; font-size: 1.2rem; flex: none; }
+  .faq-group-head h2 { font-size: 1.22rem; }
+
+  .faq-item { border-top: 1px solid var(--line); }
+  .faq-panel .faq-item:first-of-type { border-top: 0; }
+  .faq-item summary { list-style: none; cursor: pointer; padding: 17px 44px 17px 2px;
+    position: relative; font-weight: 600; font-size: 1rem; color: var(--navy); }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: ''; position: absolute; right: 10px; top: 50%;
+    width: 8px; height: 8px; margin-top: -6px; border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor; transform: rotate(45deg); transition: transform 0.2s; }
+  .faq-item[open] summary::after { transform: rotate(-135deg); margin-top: -2px; }
+  .faq-item[open] summary { color: var(--coral-text); }
+  .faq-item summary:hover { color: var(--navy-dark); }
+  .faq-item summary:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+  .faq-item > p { margin: 0 0 18px; padding-right: 40px; color: var(--ink-soft); line-height: 1.68; }
+  .faq-item > p a { color: var(--navy); font-weight: 600; }
+
+  /* The one time-sensitive thing on the page, so it is not behind a click.
+     Laid out as a row so it reads as a strip rather than another full section. */
+  .faq-urgent { max-width: 800px; margin: 22px auto 0; background: var(--coral-text);
+    color: var(--white); border-radius: 22px; padding: 26px 30px;
+    display: flex; align-items: center; gap: 26px; }
+  .faq-urgent-text { flex: 1; }
+  .faq-urgent .mono { color: rgba(255,255,255,0.72); display: block; margin-bottom: 6px; }
+  .faq-urgent h2 { color: var(--white); font-size: 1.32rem; margin-bottom: 5px; }
+  .faq-urgent p { color: rgba(255,255,255,0.9); margin: 0; font-size: 0.95rem; }
+  .btn-urgent { background: var(--white); color: var(--coral-text); padding: 14px 26px;
+    border-radius: 100px; font-weight: 700; font-size: 0.92rem; white-space: nowrap;
+    flex: none; transition: transform 0.2s, box-shadow 0.2s; }
+  .btn-urgent:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.18); }
+
+  @media (max-width: 700px) {
+    .faq-head { padding: 48px 0 32px; }
+    .faq-body { padding: 32px 0 56px; }
+    .faq-card { padding: 6px 20px 10px; border-radius: 18px; }
+    .faq-tab { font-size: 0.82rem; padding: 9px 13px; }
+    .faq-urgent { flex-direction: column; align-items: flex-start; gap: 18px;
+      padding: 24px 22px; border-radius: 18px; }
+    .btn-urgent { width: 100%; text-align: center; }
+  }
+
+  /* Weave's floating button is a 350x110 iframe of theirs sitting in our DOM.
+     At 390px that is 90% of the screen width, mostly the "Click to send us a
+     message" tooltip. The contents are cross-origin so they cannot be restyled,
+     but the iframe element is ours: scale it from the bottom right corner, which
+     keeps it anchored and shrinks the tooltip with it. The tap circle is about
+     68px, so at 0.72 it is still ~49px and clears the 44px guideline. If Weave
+     ever offers a "hide tooltip" setting in their dashboard, prefer that. */
+  @media (max-width: 700px) {
+    #iframe-weave-widget-button {
+      transform: scale(0.72);
+      transform-origin: bottom right;
+    }
   }

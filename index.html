@@ -62,7 +62,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400..600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=d9a96120">
+<!-- Content that fades in on scroll starts at opacity:0 and is revealed by JS.
+     Scope that hidden state to .js so a browser without JavaScript -- or one
+     where site.js fails to load -- renders the page fully visible instead of
+     blank. This runs before site.js, so a failed fetch of site.js is covered
+     too, not just a disabled-JS setting. -->
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="/assets/site.css?v=e0fff31a">
 <script defer src="https://book.getweave.com/text-connect/311687a8-40cc-4693-926a-d9f46b904d2a/widget.js"></script>
 </head>
 <body>
@@ -70,7 +76,7 @@
 
 <nav>
   <div class="wrap">
-    <a href="/" class="brand-link"><img class="brand-logo" src="/assets/img/logo.png" alt="Uptown Orthodontics" width="177" height="54"></a>
+    <a href="/" class="brand-link"><img class="brand-logo" src="/assets/img/logo.png?v=7f30a9aa" alt="Uptown Orthodontics" width="177" height="54"></a>
     <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
       <span></span><span></span><span></span>
     </button>
@@ -88,7 +94,17 @@
           <div class="nav-sub" id="sub-treat">
             <a href="/treatments/">All Treatments</a>
             <a href="/treatments/#results">Before &amp; After</a>
-            <a href="/treatments/#financing">Insurance &amp; Payment</a>
+            <a href="/financing/">Insurance &amp; Payment</a>
+          </div>
+        </div>
+        <div class="nav-item has-sub">
+          <button type="button" class="nav-top" aria-expanded="false" aria-controls="sub-faq">FAQ</button>
+          <div class="nav-sub" id="sub-faq">
+            <a href="/faq/">All Questions</a>
+            <a href="/faq/#start">Getting Started</a>
+            <a href="/faq/#money">Cost &amp; Insurance</a>
+            <a href="/faq/#treatment">Treatment</a>
+            <a href="/faq/#everyday">Everyday Care</a>
           </div>
         </div>
         <a href="/quiz/">Smile Quiz</a>
@@ -102,8 +118,8 @@
 <section class="hero">
   <div class="hero-bg" id="heroBg">
     
-    <div data-src="hero-1" class="slide active" style="background-image:url('/assets/img/hero-1.jpg')"></div>
-    <div data-src="hero-2" class="slide" style="background-image:url('/assets/img/hero-2.jpg')"></div>
+    <div data-src="hero-1" class="slide active" style="background-image:url('/assets/img/hero-1.jpg?v=fac654f3')"></div>
+    <div data-src="hero-2" class="slide" style="background-image:url('/assets/img/hero-2.jpg?v=357b77a2')"></div>
   </div>
   <div class="wrap">
     <div class="eyebrow"><div class="eyebrow-line"></div><span class="mono">Bay City, Michigan</span></div>
@@ -114,7 +130,7 @@
       <a href="/about/#doctor" class="btn-secondary" style="border-color:rgba(255,255,255,0.6); color:var(--white);">Meet Our Doctors</a>
     </div>
     <div class="trust-badges">
-      <div class="badge"><span class="star-rating" style="--fill:90%" role="img" aria-label="4.5 out of 5 stars"><span class="sr-track"></span><span class="sr-fill"></span></span> 4.5 on <a href="https://www.google.com/maps/place/?q=place_id:ChIJia67j7LhI4gREKmKe1k3m2U" target="_blank" rel="noopener" class="badge-link">Google</a></div>
+      <div class="badge"><span class="star-rating" style="--fill:96%" role="img" aria-label="4.8 out of 5 stars"><span class="sr-track"></span><span class="sr-fill"></span></span> 4.8 on <a href="https://www.google.com/maps/place/?q=place_id:ChIJia67j7LhI4gREKmKe1k3m2U" target="_blank" rel="noopener" class="badge-link">Google</a></div>
       <div class="badge">20+ Years Serving Bay City</div>
       <div class="badge">Thousands of Smiles Created</div>
       <div class="badge">Flexible Financing</div>
@@ -127,9 +143,9 @@
   <div class="wrap">
     <a class="trust-item" href="/about/#doctor"><div class="icon">✓</div><div class="t-label">AAO Member<br>Orthodontists</div></a>
     <a class="trust-item" href="/treatments/"><div class="icon">◎</div><div class="t-label">State-of-the-Art<br>Technology</div></a>
-    <a class="trust-item" href="/treatments/#financing"><div class="icon">%</div><div class="t-label">Flexible<br>Financing</div></a>
+    <a class="trust-item" href="/financing/"><div class="icon">%</div><div class="t-label">Flexible<br>Financing</div></a>
     <a class="trust-item" href="/about/#team"><div class="icon">⌂</div><div class="t-label">Family-Friendly<br>Office</div></a>
-    <a class="trust-item" href="/treatments/#financing"><div class="icon">＋</div><div class="t-label">Insurance<br>Accepted</div></a>
+    <a class="trust-item" href="/financing/"><div class="icon">＋</div><div class="t-label">Insurance<br>Accepted</div></a>
   </div>
 </div>
 
@@ -141,15 +157,15 @@
       <p>A clean, comfortable office with the personal feel of a family-owned practice.</p>
     </div>
     <div class="office-grid">
-      <div class="photo-ph real light fade-up"><img src="/assets/img/hero-2.jpg" alt="Dr. Hannah Collison treating a patient" width="1400" height="612" loading="lazy" decoding="async" style="object-position:66% 35%" srcset="/assets/img/hero-2-400.jpg 400w, /assets/img/hero-2-800.jpg 800w, /assets/img/hero-2-1200.jpg 1200w, /assets/img/hero-2.jpg 1400w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px"></div>
-      <div class="photo-ph real light fade-up"><img src="/assets/img/hero-1.jpg" alt="An orthodontist treating a patient at Uptown Orthodontics" width="1400" height="1050" loading="lazy" decoding="async" srcset="/assets/img/hero-1-400.jpg 400w, /assets/img/hero-1-800.jpg 800w, /assets/img/hero-1-1200.jpg 1200w, /assets/img/hero-1.jpg 1400w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px"></div>
+      <div class="photo-ph real light fade-up"><img src="/assets/img/office-reception.jpg?v=3f344ab0" alt="The reception desk at Uptown Orthodontics" width="1200" height="900" loading="lazy" decoding="async" srcset="/assets/img/office-reception-400.jpg?v=582517fd 400w, /assets/img/office-reception-800.jpg?v=2b23db8b 800w, /assets/img/office-reception.jpg?v=3f344ab0 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px"></div>
+      <div class="photo-ph real light fade-up"><img src="/assets/img/office-waiting.jpg?v=777242e6" alt="The waiting area at Uptown Orthodontics" width="1200" height="900" loading="lazy" decoding="async" srcset="/assets/img/office-waiting-400.jpg?v=4e576c0a 400w, /assets/img/office-waiting-800.jpg?v=e32e30f5 800w, /assets/img/office-waiting.jpg?v=777242e6 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px"></div>
       
-      <div class="photo-ph real light fade-up"><img src="/assets/img/office-1.jpg" alt="The reception area at Uptown Orthodontics" width="1400" height="1050" loading="lazy" decoding="async" srcset="/assets/img/office-1-400.jpg 400w, /assets/img/office-1-800.jpg 800w, /assets/img/office-1-1200.jpg 1200w, /assets/img/office-1.jpg 1400w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px"></div>
+      <div class="photo-ph real light fade-up"><img src="/assets/img/office-treatment.jpg?v=f43ea03f" alt="The treatment bays at Uptown Orthodontics" width="1200" height="900" loading="lazy" decoding="async" srcset="/assets/img/office-treatment-400.jpg?v=39996a98 400w, /assets/img/office-treatment-800.jpg?v=bbd1df34 800w, /assets/img/office-treatment.jpg?v=f43ea03f 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px"></div>
     </div>
   </div>
 </section>
 
-<div class="exterior-banner fade-up" style="background-image:url('/assets/img/exterior.jpg');"></div>
+<div class="exterior-banner fade-up" style="background-image:url('/assets/img/exterior.jpg?v=9f2572b3');"></div>
 
 <section class="location" id="location" style="background:var(--blue-tint);">
   <div class="wrap">
@@ -162,7 +178,7 @@
       <div class="info-row"><span class="mono">Address</span><span>130 E Main Street, Bay City, MI 48708</span></div>
       <div class="info-row"><span class="mono">Phone</span><span><a href="tel:9898942929" style="font-weight:700; color:var(--coral);">989.894.2929</a></span></div>
       <div class="info-row"><span class="mono">Email</span><span><a href="mailto:office@uptown-ortho.com" style="color:var(--navy);">office@uptown-ortho.com</a></span></div>
-      <div class="info-row"><span class="mono">Hours</span><span>Mon–Thu 7:30&nbsp;AM–4:30&nbsp;PM<br><span style="font-size:0.88em; opacity:0.75;">Fri 8&nbsp;AM–Noon — phones only</span></span></div>
+      <div class="info-row"><span class="mono">Hours</span><span>Mon–Thu 7:30&nbsp;AM–4:30&nbsp;PM<br><span style="font-size:0.88em; opacity:0.75;">Fri 8&nbsp;AM–Noon, phones only</span></span></div>
       <div class="info-row"><span class="mono">Parking</span><span>Free on-site parking, Uptown Bay City</span></div>
       <a href="#book" class="btn-primary">Schedule Consultation</a>
     </div>
@@ -172,7 +188,7 @@
 <section class="final-cta" id="book">
   <div class="wrap fade-up">
     <h2>Ready to Love Your Smile?</h2>
-    <p>Send us a message and we'll text you right back — or call, whichever is easier.</p>
+    <p>Send us a message and we'll text you right back. Or call, whichever is easier.</p>
 
     <!-- Weave's own contact form, embedded inline. Uses the public book.getweave.com
          host, NOT the wsf-prod-1.wstack.net address the floating widget uses — that
@@ -181,7 +197,7 @@
          The phone button below is the fallback if this ever stops loading. -->
     <div class="weave-embed">
       <div class="weave-fallback">
-        <p>The message form couldn't load — a browser extension may be blocking it.</p>
+        <p>The message form couldn't load. A browser extension may be blocking it.</p>
         <a href="tel:9898942929">Call 989.894.2929</a>
         <a href="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info" target="_blank" rel="noopener">Open the form in a new tab &rarr;</a>
       </div>
@@ -191,6 +207,7 @@
 
     <div class="cta-actions">
       <a href="tel:9898942929" class="btn-primary">Call 989.894.2929</a>
+      <a href="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info" target="_blank" rel="noopener" class="btn-secondary cta-message">Send a Message</a>
     </div>
 
     <p class="cta-hours">Mon&ndash;Thu 7:30&nbsp;AM&ndash;4:30&nbsp;PM &middot; Fri 8&nbsp;AM&ndash;Noon (phones only)</p>
@@ -232,6 +249,6 @@
   </div>
 </footer>
 
-<script src="/assets/site.js?v=c7d58a00" defer></script>
+<script src="/assets/site.js?v=4c1415f7" defer></script>
 </body>
 </html>

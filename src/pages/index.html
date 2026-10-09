@@ -13,7 +13,7 @@
       <a href="about.html#doctor" class="btn-secondary" style="border-color:rgba(255,255,255,0.6); color:var(--white);">Meet Our Doctors</a>
     </div>
     <div class="trust-badges">
-      <div class="badge"><span class="star-rating" style="--fill:90%" role="img" aria-label="4.5 out of 5 stars"><span class="sr-track"></span><span class="sr-fill"></span></span> 4.5 on <a href="https://www.google.com/maps/place/?q=place_id:ChIJia67j7LhI4gREKmKe1k3m2U" target="_blank" rel="noopener" class="badge-link">Google</a></div>
+      <div class="badge"><span class="star-rating" style="--fill:{{RATING_FILL}}" role="img" aria-label="{{RATING_LABEL}}"><span class="sr-track"></span><span class="sr-fill"></span></span> {{RATING}} on <a href="https://www.google.com/maps/place/?q=place_id:ChIJia67j7LhI4gREKmKe1k3m2U" target="_blank" rel="noopener" class="badge-link">Google</a></div>
       <div class="badge">20+ Years Serving Bay City</div>
       <div class="badge">Thousands of Smiles Created</div>
       <div class="badge">Flexible Financing</div>
@@ -26,9 +26,9 @@
   <div class="wrap">
     <a class="trust-item" href="about.html#doctor"><div class="icon">✓</div><div class="t-label">AAO Member<br>Orthodontists</div></a>
     <a class="trust-item" href="treatments.html"><div class="icon">◎</div><div class="t-label">State-of-the-Art<br>Technology</div></a>
-    <a class="trust-item" href="treatments.html#financing"><div class="icon">%</div><div class="t-label">Flexible<br>Financing</div></a>
+    <a class="trust-item" href="financing.html"><div class="icon">%</div><div class="t-label">Flexible<br>Financing</div></a>
     <a class="trust-item" href="about.html#team"><div class="icon">⌂</div><div class="t-label">Family-Friendly<br>Office</div></a>
-    <a class="trust-item" href="treatments.html#financing"><div class="icon">＋</div><div class="t-label">Insurance<br>Accepted</div></a>
+    <a class="trust-item" href="financing.html"><div class="icon">＋</div><div class="t-label">Insurance<br>Accepted</div></a>
   </div>
 </div>
 
@@ -40,10 +40,10 @@
       <p>A clean, comfortable office with the personal feel of a family-owned practice.</p>
     </div>
     <div class="office-grid">
-      <div class="photo-ph real light fade-up"><img src="assets/img/hero-2.jpg" alt="Dr. Hannah Collison treating a patient" width="1400" height="612" loading="lazy" decoding="async" style="object-position:66% 35%"></div>
-      <div class="photo-ph real light fade-up"><img src="assets/img/hero-1.jpg" alt="An orthodontist treating a patient at Uptown Orthodontics" width="1400" height="1050" loading="lazy" decoding="async"></div>
+      <div class="photo-ph real light fade-up"><img src="assets/img/office-reception.jpg" alt="The reception desk at Uptown Orthodontics" width="1200" height="900" loading="lazy" decoding="async"></div>
+      <div class="photo-ph real light fade-up"><img src="assets/img/office-waiting.jpg" alt="The waiting area at Uptown Orthodontics" width="1200" height="900" loading="lazy" decoding="async"></div>
       
-      <div class="photo-ph real light fade-up"><img src="assets/img/office-1.jpg" alt="The reception area at Uptown Orthodontics" width="1400" height="1050" loading="lazy" decoding="async"></div>
+      <div class="photo-ph real light fade-up"><img src="assets/img/office-treatment.jpg" alt="The treatment bays at Uptown Orthodontics" width="1200" height="900" loading="lazy" decoding="async"></div>
     </div>
   </div>
 </section>
@@ -61,7 +61,7 @@
       <div class="info-row"><span class="mono">Address</span><span>130 E Main Street, Bay City, MI 48708</span></div>
       <div class="info-row"><span class="mono">Phone</span><span><a href="tel:9898942929" style="font-weight:700; color:var(--coral);">989.894.2929</a></span></div>
       <div class="info-row"><span class="mono">Email</span><span><a href="mailto:office@uptown-ortho.com" style="color:var(--navy);">office@uptown-ortho.com</a></span></div>
-      <div class="info-row"><span class="mono">Hours</span><span>Mon–Thu 7:30&nbsp;AM–4:30&nbsp;PM<br><span style="font-size:0.88em; opacity:0.75;">Fri 8&nbsp;AM–Noon — phones only</span></span></div>
+      <div class="info-row"><span class="mono">Hours</span><span>Mon–Thu 7:30&nbsp;AM–4:30&nbsp;PM<br><span style="font-size:0.88em; opacity:0.75;">Fri 8&nbsp;AM–Noon, phones only</span></span></div>
       <div class="info-row"><span class="mono">Parking</span><span>Free on-site parking, Uptown Bay City</span></div>
       <a href="#book" class="btn-primary">Schedule Consultation</a>
     </div>
@@ -71,7 +71,7 @@
 <section class="final-cta" id="book">
   <div class="wrap fade-up">
     <h2>Ready to Love Your Smile?</h2>
-    <p>Send us a message and we'll text you right back — or call, whichever is easier.</p>
+    <p>Send us a message and we'll text you right back. Or call, whichever is easier.</p>
 
     <!-- Weave's own contact form, embedded inline. Uses the public book.getweave.com
          host, NOT the wsf-prod-1.wstack.net address the floating widget uses — that
@@ -80,7 +80,7 @@
          The phone button below is the fallback if this ever stops loading. -->
     <div class="weave-embed">
       <div class="weave-fallback">
-        <p>The message form couldn't load — a browser extension may be blocking it.</p>
+        <p>The message form couldn't load. A browser extension may be blocking it.</p>
         <a href="tel:9898942929">Call 989.894.2929</a>
         <a href="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info" target="_blank" rel="noopener">Open the form in a new tab &rarr;</a>
       </div>
@@ -90,6 +90,7 @@
 
     <div class="cta-actions">
       <a href="tel:9898942929" class="btn-primary">Call 989.894.2929</a>
+      <a href="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info" target="_blank" rel="noopener" class="btn-secondary cta-message">Send a Message</a>
     </div>
 
     <p class="cta-hours">Mon&ndash;Thu 7:30&nbsp;AM&ndash;4:30&nbsp;PM &middot; Fri 8&nbsp;AM&ndash;Noon (phones only)</p>

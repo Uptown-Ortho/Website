@@ -10,7 +10,7 @@
 
       <div class="quiz-step active" data-step="0">
         <span class="q-label">Question 1 of 3</span>
-        <h3>Who is this for?</h3>
+        <h2>Who is this for?</h2>
         <div class="quiz-options">
           <button class="quiz-opt" type="button">Myself</button>
           <button class="quiz-opt" type="button">My child (under 12)</button>
@@ -21,7 +21,7 @@
 
       <div class="quiz-step" data-step="1">
         <span class="q-label">Question 2 of 3</span>
-        <h3>What's the main concern?</h3>
+        <h2>What's the main concern?</h2>
         <div class="quiz-options">
           <button class="quiz-opt" type="button">Crowded or crooked teeth</button>
           <button class="quiz-opt" type="button">Gaps between teeth</button>
@@ -33,7 +33,7 @@
 
       <div class="quiz-step" data-step="2">
         <span class="q-label">Question 3 of 3</span>
-        <h3>When are you hoping to start?</h3>
+        <h2>When are you hoping to start?</h2>
         <div class="quiz-options">
           <button class="quiz-opt" type="button">As soon as possible</button>
           <button class="quiz-opt" type="button">Within the next 6 months</button>
@@ -45,7 +45,7 @@
       <div class="quiz-step" data-step="3">
         <div class="quiz-result">
           <div class="q-icon">✓</div>
-          <h3 id="quizResultTitle">Here's what to know before your visit.</h3>
+          <h2 id="quizResultTitle">Here's what to know before your visit.</h2>
           <p id="quizResultBody"></p>
           <ul id="quizResultList" style="text-align:left; list-style:none; padding:0; margin:0 0 26px; display:grid; gap:10px;"></ul>
           <a href="#book" class="btn-primary">Schedule My Free Consultation</a>
@@ -57,28 +57,15 @@
   </div>
 </section>
 
-<section class="final-cta" id="book">
+<section class="final-cta compact" id="book">
   <div class="wrap fade-up">
     <h2>Ready to Love Your Smile?</h2>
-    <p>Send us a message and we'll text you right back — or call, whichever is easier.</p>
+    <p>Send us a message and we'll text you right back. Or call, whichever is easier.</p>
 
-    <!-- Weave's own contact form, embedded inline. Uses the public book.getweave.com
-         host, NOT the wsf-prod-1.wstack.net address the floating widget uses — that
-         one encodes their cluster and region and will move. Weave handles delivery
-         and the SMS consent wording; nothing is stored on this site.
-         The phone button below is the fallback if this ever stops loading. -->
-    <div class="weave-embed">
-      <div class="weave-fallback">
-        <p>The message form couldn't load — a browser extension may be blocking it.</p>
-        <a href="tel:9898942929">Call 989.894.2929</a>
-        <a href="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info" target="_blank" rel="noopener">Open the form in a new tab &rarr;</a>
-      </div>
-      <iframe src="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info?embeddedWidget=true"
-              title="Send Uptown Orthodontics a message" loading="lazy"></iframe>
-    </div>
 
     <div class="cta-actions">
       <a href="tel:9898942929" class="btn-primary">Call 989.894.2929</a>
+      <a href="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info" target="_blank" rel="noopener" class="btn-secondary cta-message">Send a Message</a>
     </div>
 
     <p class="cta-hours">Mon&ndash;Thu 7:30&nbsp;AM&ndash;4:30&nbsp;PM &middot; Fri 8&nbsp;AM&ndash;Noon (phones only)</p>

@@ -24,7 +24,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400..600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=d9a96120">
+<!-- Content that fades in on scroll starts at opacity:0 and is revealed by JS.
+     Scope that hidden state to .js so a browser without JavaScript -- or one
+     where site.js fails to load -- renders the page fully visible instead of
+     blank. This runs before site.js, so a failed fetch of site.js is covered
+     too, not just a disabled-JS setting. -->
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="/assets/site.css?v=e0fff31a">
 <script defer src="https://book.getweave.com/text-connect/311687a8-40cc-4693-926a-d9f46b904d2a/widget.js"></script>
 </head>
 <body>
@@ -32,7 +38,7 @@
 
 <nav>
   <div class="wrap">
-    <a href="/" class="brand-link"><img class="brand-logo" src="/assets/img/logo.png" alt="Uptown Orthodontics" width="177" height="54"></a>
+    <a href="/" class="brand-link"><img class="brand-logo" src="/assets/img/logo.png?v=7f30a9aa" alt="Uptown Orthodontics" width="177" height="54"></a>
     <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
       <span></span><span></span><span></span>
     </button>
@@ -50,7 +56,17 @@
           <div class="nav-sub" id="sub-treat">
             <a href="/treatments/">All Treatments</a>
             <a href="/treatments/#results">Before &amp; After</a>
-            <a href="/treatments/#financing">Insurance &amp; Payment</a>
+            <a href="/financing/">Insurance &amp; Payment</a>
+          </div>
+        </div>
+        <div class="nav-item has-sub">
+          <button type="button" class="nav-top" aria-expanded="false" aria-controls="sub-faq">FAQ</button>
+          <div class="nav-sub" id="sub-faq">
+            <a href="/faq/">All Questions</a>
+            <a href="/faq/#start">Getting Started</a>
+            <a href="/faq/#money">Cost &amp; Insurance</a>
+            <a href="/faq/#treatment">Treatment</a>
+            <a href="/faq/#everyday">Everyday Care</a>
           </div>
         </div>
         <a href="/quiz/">Smile Quiz</a>
@@ -73,11 +89,24 @@
 
 <section class="doctor fade-up" id="doctor">
   <div class="wrap">
-    <div class="photo-ph real doctor-photo-full"><img src="/assets/img/doctors-portraits.jpg" alt="Dr. Brandan LeBourdais and Dr. Hannah Collison" width="1400" height="680" loading="lazy" decoding="async" srcset="/assets/img/doctors-portraits-400.jpg 400w, /assets/img/doctors-portraits-800.jpg 800w, /assets/img/doctors-portraits-1200.jpg 1200w, /assets/img/doctors-portraits.jpg 1400w" sizes="(max-width: 1240px) 100vw, 1200px"></div>
+    <!-- Two slots rather than one composed JPEG, so Dr. Collison's half can
+         crossfade between her professional shot and the family photo the way
+         it does on the practice's current site. Splitting them also lets the
+         two portraits be replaced independently. -->
+    <div class="doctor-photo-pair">
+      <div class="doc-slot">
+        <img src="/assets/img/dr-lebourdais.jpg?v=a2721f12" alt="Dr. Brandan LeBourdais" width="1000" height="1500" loading="lazy" decoding="async" srcset="/assets/img/dr-lebourdais-400.jpg?v=7a65763e 400w, /assets/img/dr-lebourdais-800.jpg?v=967149fc 800w, /assets/img/dr-lebourdais.jpg?v=a2721f12 1000w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px">
+      </div>
+      <figure class="doc-slot doc-rotator" id="collisonPhotos">
+        <img class="doc-shot is-on" src="/assets/img/dr-collison.jpg?v=a9325bc1" alt="Dr. Hannah Collison" width="1000" height="1250" loading="lazy" decoding="async" srcset="/assets/img/dr-collison-400.jpg?v=1de19542 400w, /assets/img/dr-collison-800.jpg?v=88d93b20 800w, /assets/img/dr-collison.jpg?v=a9325bc1 1000w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px">
+        <img class="doc-shot doc-shot-family" src="/assets/img/collison-family.jpg?v=5cfa05d1" alt="Dr. Collison with her husband Jason and their children Stevie and Cal" width="900" height="1350" loading="lazy" decoding="async" srcset="/assets/img/collison-family-400.jpg?v=a406c5ae 400w, /assets/img/collison-family-800.jpg?v=5755c182 800w, /assets/img/collison-family.jpg?v=5cfa05d1 900w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px">
+        <div class="doc-rotator-dots" aria-hidden="true"></div>
+      </figure>
+    </div>
     <div class="doctor-bios">
       <div class="doc-bio">
         <div class="doc-head">
-          <img class="doc-avatar" src="/assets/img/dr-lebourdais-avatar.jpg" alt="Dr. Brandan LeBourdais" width="76" height="76" loading="lazy">
+          <img class="doc-avatar" src="/assets/img/dr-lebourdais-avatar.jpg?v=0c60ff1e" alt="Dr. Brandan LeBourdais" width="76" height="76" loading="lazy">
           <div>
             <span class="mono">Meet your doctor</span>
             <h2>Dr. Brandan LeBourdais</h2>
@@ -85,12 +114,14 @@
         </div>
         <div class="creds">DDS, MS &mdash; Orthodontist</div>
         <div class="memberships">American Association of Orthodontists &middot; Great Lakes Association of Orthodontists &middot; American Dental Association &middot; Michigan Dental Association &middot; Saginaw Valley District Dental Society</div>
-        <p class="bio">Dr. LeBourdais offers over 25 years of experience in the dental community, from Bay City to Okinawa, Japan &mdash; treating patients ranging from children and adults to Marine Special Forces and Navy S.E.A.L. Teams. As a former Navy general dentist, he was honored with the "Top Doc" award during his service with the 3rd Dental Battalion in Okinawa. Outside the office, he's usually camping, traveling, or watching a game with his wife and two sons &mdash; and the family stays involved locally, supporting area youth sports, arts and music programs, and local shelters.</p>
+        <p class="bio">With over 25 years of experience in dentistry, Dr. LeBourdais brings a unique perspective to orthodontic care. His career has taken him from Bay City to Okinawa, Japan, where he served as a Navy general dentist with the 3rd Dental Battalion and was honored with the &ldquo;Top Doc&rdquo; award for his clinical abilities, leadership, and dedication to service.</p>
+        <p class="bio">Dr. LeBourdais believes every patient deserves individualized care and a treatment plan designed around their unique needs and goals. His comprehensive approach focuses on creating not only a beautiful smile, but one that supports long-term dental health.</p>
+        <p class="bio">Outside the office, Dr. LeBourdais enjoys spending time with his wife and two sons. As a family, they love camping, traveling, golf, skiing, and supporting the local schools, sports, arts, and community organizations they&rsquo;re proud to call home.</p>
         <div class="doctor-quote">"Bay City is my hometown, and it is a privilege to build my practice here."</div>
       </div>
       <div class="doc-bio">
         <div class="doc-head">
-          <img class="doc-avatar" src="/assets/img/dr-collison-avatar.jpg" alt="Dr. Hannah Collison" width="76" height="76" loading="lazy">
+          <img class="doc-avatar" src="/assets/img/dr-collison-avatar.jpg?v=4c22748a" alt="Dr. Hannah Collison" width="76" height="76" loading="lazy">
           <div>
             <span class="mono">Meet your doctor</span>
             <h2>Dr. Hannah Collison</h2>
@@ -98,7 +129,10 @@
         </div>
         <div class="creds">DDS, MS &mdash; Orthodontist</div>
         <div class="memberships">American Association of Orthodontists &middot; Great Lakes Association of Orthodontists &middot; American Dental Association &middot; Michigan Dental Association &middot; Saginaw Valley District Dental Society &middot; Northern Michigan Orthodontic Study Club</div>
-        <p class="bio">Originally from Saginaw, Dr. Collison's own experience as an orthodontic patient sparked a lifelong commitment to helping others achieve confident smiles. She earned her Bachelor's in Biomedical Sciences from Central Michigan University, then her DDS from the University of Detroit Mercy, where she was selected for their Orthodontic Program to complete her Master's and Certificate in Orthodontics. Outside the practice, she's spending time with her husband Jason and their two kids, Stevie and Cal &mdash; or trying a new restaurant with the latest NYT bestseller in hand.</p>
+        <p class="bio">Originally from Saginaw, Michigan, Dr. Hannah Collison&rsquo;s passion for orthodontics began with her own experience as a patient. Today, she is dedicated to helping others achieve confident smiles, healthy teeth, and lasting function.</p>
+        <p class="bio">Dr. Collison earned her Bachelor&rsquo;s degree in Biomedical Sciences from Central Michigan University (Fire Up, Chips!), followed by her DDS from the University of Detroit Mercy. She went on to complete her Master&rsquo;s of Science and Certificate in Orthodontics through UDM&rsquo;s prestigious orthodontic program.</p>
+        <p class="bio">She believes great orthodontic care goes beyond straight teeth, focusing on a healthy, functional bite and long-term dental health.</p>
+        <p class="bio">Outside the office, Dr. Collison enjoys spending time with her husband, Jason, and their two children, Stevie and Cal. She loves trying new restaurants, reading, and making memories with family and friends.</p>
         <div class="doctor-quote">"I'm thrilled to be part of your orthodontic journey."</div>
       </div>
     </div>
@@ -114,16 +148,14 @@
       <p>Familiar faces at every visit help make your experience feel easy and comfortable.</p>
     </div>
     <div class="team-grid">
-      <div class="team-card fade-up" data-name="April" data-role="Office Manager"><span class="team-initials">A</span><h3>April</h3><p>Office Manager</p>
+      <div class="team-card fade-up" data-name="April" data-role="Office Manager"><img class="team-photo" src="/assets/img/team-april.jpg?v=cb577ae7" alt="April" width="640" height="640" loading="lazy" decoding="async" srcset="/assets/img/team-april-400.jpg?v=e1f57960 400w, /assets/img/team-april.jpg?v=cb577ae7 640w" sizes="104px"><h3>April</h3><p>Office Manager</p>
         <!-- To switch on the profile modal for this person, add a bio here and
              swap .team-initials for an img.team-photo pointing at their headshot
         <div class="team-bio" hidden>Two or three sentences.</div> --></div>
-      <div class="team-card fade-up" data-name="Amanda" data-role="Patient Coordinator"><span class="team-initials">A</span><h3>Amanda</h3><p>Patient Coordinator</p></div>
-      <div class="team-card fade-up" data-name="Ashtyn" data-role="Orthodontic Assistant"><span class="team-initials">A</span><h3>Ashtyn</h3><p>Orthodontic Assistant</p></div>
-      <div class="team-card fade-up" data-name="Beth" data-role="Orthodontic Assistant"><span class="team-initials">B</span><h3>Beth</h3><p>Orthodontic Assistant</p></div>
+      <div class="team-card fade-up" data-name="Amanda" data-role="Patient Coordinator"><img class="team-photo" src="/assets/img/team-amanda.jpg?v=3cf0a32f" alt="Amanda" width="640" height="640" loading="lazy" decoding="async" srcset="/assets/img/team-amanda-400.jpg?v=85e88fe1 400w, /assets/img/team-amanda.jpg?v=3cf0a32f 640w" sizes="104px"><h3>Amanda</h3><p>Patient Coordinator</p></div>
+      <div class="team-card fade-up" data-name="Ashtyn" data-role="Orthodontic Assistant"><img class="team-photo" src="/assets/img/team-ashtyn.jpg?v=0cff4f5c" alt="Ashtyn" width="640" height="640" loading="lazy" decoding="async" srcset="/assets/img/team-ashtyn-400.jpg?v=ab46fb56 400w, /assets/img/team-ashtyn.jpg?v=0cff4f5c 640w" sizes="104px"><h3>Ashtyn</h3><p>Orthodontic Assistant</p></div>
+      <div class="team-card fade-up" data-name="Beth" data-role="Orthodontic Assistant"><img class="team-photo" src="/assets/img/team-beth.jpg?v=5f8e3f8b" alt="Beth" width="640" height="640" loading="lazy" decoding="async" srcset="/assets/img/team-beth-400.jpg?v=4d7e7ca3 400w, /assets/img/team-beth.jpg?v=5f8e3f8b 640w" sizes="104px"><h3>Beth</h3><p>Orthodontic Assistant</p></div>
       <div class="team-card fade-up" data-name="Maddison" data-role="Orthodontic Assistant"><span class="team-initials">M</span><h3>Maddison</h3><p>Orthodontic Assistant</p></div>
-      <div class="team-card fade-up" data-name="Sandy" data-role="Orthodontic Assistant"><span class="team-initials">S</span><h3>Sandy</h3><p>Orthodontic Assistant</p></div>
-    </div>
   </div>
 </section>
 
@@ -138,34 +170,21 @@
       <div class="community-mark" aria-hidden="true">☘</div>
     </div>
     <div class="community-photos fade-up">
-      <img src="/assets/img/community-race.jpg" alt="Children setting off at the start of the Bay City St. Patrick&rsquo;s Day Leprechaun Races, under a banner carrying the Uptown Orthodontics logo" width="1200" height="1069" loading="lazy" decoding="async" srcset="/assets/img/community-race-400.jpg 400w, /assets/img/community-race-800.jpg 800w, /assets/img/community-race.jpg 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px">
-      <img src="/assets/img/community-table.jpg" alt="Three members of the Uptown Orthodontics team at their booth at a community event" width="1200" height="1069" loading="lazy" decoding="async" srcset="/assets/img/community-table-400.jpg 400w, /assets/img/community-table-800.jpg 800w, /assets/img/community-table.jpg 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px">
+      <img src="/assets/img/community-race.jpg?v=367d9b37" alt="Children setting off at the start of the Bay City St. Patrick&rsquo;s Day Leprechaun Races, under a banner carrying the Uptown Orthodontics logo" width="1200" height="1069" loading="lazy" decoding="async" srcset="/assets/img/community-race-400.jpg?v=ab7f4dbe 400w, /assets/img/community-race-800.jpg?v=e4c7888d 800w, /assets/img/community-race.jpg?v=367d9b37 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px">
+      <img src="/assets/img/community-table.jpg?v=d9995bd8" alt="Three members of the Uptown Orthodontics team at their booth at a community event" width="1200" height="1069" loading="lazy" decoding="async" srcset="/assets/img/community-table-400.jpg?v=59b4e048 400w, /assets/img/community-table-800.jpg?v=37ed27c0 800w, /assets/img/community-table.jpg?v=d9995bd8 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px">
     </div>
   </div>
 </section>
 
-<section class="final-cta" id="book">
+<section class="final-cta compact" id="book">
   <div class="wrap fade-up">
     <h2>Ready to Love Your Smile?</h2>
-    <p>Send us a message and we'll text you right back — or call, whichever is easier.</p>
+    <p>Send us a message and we'll text you right back. Or call, whichever is easier.</p>
 
-    <!-- Weave's own contact form, embedded inline. Uses the public book.getweave.com
-         host, NOT the wsf-prod-1.wstack.net address the floating widget uses — that
-         one encodes their cluster and region and will move. Weave handles delivery
-         and the SMS consent wording; nothing is stored on this site.
-         The phone button below is the fallback if this ever stops loading. -->
-    <div class="weave-embed">
-      <div class="weave-fallback">
-        <p>The message form couldn't load — a browser extension may be blocking it.</p>
-        <a href="tel:9898942929">Call 989.894.2929</a>
-        <a href="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info" target="_blank" rel="noopener">Open the form in a new tab &rarr;</a>
-      </div>
-      <iframe src="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info?embeddedWidget=true"
-              title="Send Uptown Orthodontics a message" loading="lazy"></iframe>
-    </div>
 
     <div class="cta-actions">
       <a href="tel:9898942929" class="btn-primary">Call 989.894.2929</a>
+      <a href="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info" target="_blank" rel="noopener" class="btn-secondary cta-message">Send a Message</a>
     </div>
 
     <p class="cta-hours">Mon&ndash;Thu 7:30&nbsp;AM&ndash;4:30&nbsp;PM &middot; Fri 8&nbsp;AM&ndash;Noon (phones only)</p>
@@ -218,6 +237,6 @@
   </div>
 </footer>
 
-<script src="/assets/site.js?v=c7d58a00" defer></script>
+<script src="/assets/site.js?v=4c1415f7" defer></script>
 </body>
 </html>

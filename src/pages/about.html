@@ -10,7 +10,20 @@
 
 <section class="doctor fade-up" id="doctor">
   <div class="wrap">
-    <div class="photo-ph real doctor-photo-full"><img src="assets/img/doctors-portraits.jpg" alt="Dr. Brandan LeBourdais and Dr. Hannah Collison" width="1400" height="680" loading="lazy" decoding="async"></div>
+    <!-- Two slots rather than one composed JPEG, so Dr. Collison's half can
+         crossfade between her professional shot and the family photo the way
+         it does on the practice's current site. Splitting them also lets the
+         two portraits be replaced independently. -->
+    <div class="doctor-photo-pair">
+      <div class="doc-slot">
+        <img src="assets/img/dr-lebourdais.jpg" alt="Dr. Brandan LeBourdais" width="1000" height="1500" loading="lazy" decoding="async">
+      </div>
+      <figure class="doc-slot doc-rotator" id="collisonPhotos">
+        <img class="doc-shot is-on" src="assets/img/dr-collison.jpg" alt="Dr. Hannah Collison" width="1000" height="1250" loading="lazy" decoding="async">
+        <img class="doc-shot doc-shot-family" src="assets/img/collison-family.jpg" alt="Dr. Collison with her husband Jason and their children Stevie and Cal" width="900" height="1350" loading="lazy" decoding="async">
+        <div class="doc-rotator-dots" aria-hidden="true"></div>
+      </figure>
+    </div>
     <div class="doctor-bios">
       <div class="doc-bio">
         <div class="doc-head">
@@ -22,7 +35,9 @@
         </div>
         <div class="creds">DDS, MS &mdash; Orthodontist</div>
         <div class="memberships">American Association of Orthodontists &middot; Great Lakes Association of Orthodontists &middot; American Dental Association &middot; Michigan Dental Association &middot; Saginaw Valley District Dental Society</div>
-        <p class="bio">Dr. LeBourdais offers over 25 years of experience in the dental community, from Bay City to Okinawa, Japan &mdash; treating patients ranging from children and adults to Marine Special Forces and Navy S.E.A.L. Teams. As a former Navy general dentist, he was honored with the "Top Doc" award during his service with the 3rd Dental Battalion in Okinawa. Outside the office, he's usually camping, traveling, or watching a game with his wife and two sons &mdash; and the family stays involved locally, supporting area youth sports, arts and music programs, and local shelters.</p>
+        <p class="bio">With over 25 years of experience in dentistry, Dr. LeBourdais brings a unique perspective to orthodontic care. His career has taken him from Bay City to Okinawa, Japan, where he served as a Navy general dentist with the 3rd Dental Battalion and was honored with the &ldquo;Top Doc&rdquo; award for his clinical abilities, leadership, and dedication to service.</p>
+        <p class="bio">Dr. LeBourdais believes every patient deserves individualized care and a treatment plan designed around their unique needs and goals. His comprehensive approach focuses on creating not only a beautiful smile, but one that supports long-term dental health.</p>
+        <p class="bio">Outside the office, Dr. LeBourdais enjoys spending time with his wife and two sons. As a family, they love camping, traveling, golf, skiing, and supporting the local schools, sports, arts, and community organizations they&rsquo;re proud to call home.</p>
         <div class="doctor-quote">"Bay City is my hometown, and it is a privilege to build my practice here."</div>
       </div>
       <div class="doc-bio">
@@ -35,7 +50,10 @@
         </div>
         <div class="creds">DDS, MS &mdash; Orthodontist</div>
         <div class="memberships">American Association of Orthodontists &middot; Great Lakes Association of Orthodontists &middot; American Dental Association &middot; Michigan Dental Association &middot; Saginaw Valley District Dental Society &middot; Northern Michigan Orthodontic Study Club</div>
-        <p class="bio">Originally from Saginaw, Dr. Collison's own experience as an orthodontic patient sparked a lifelong commitment to helping others achieve confident smiles. She earned her Bachelor's in Biomedical Sciences from Central Michigan University, then her DDS from the University of Detroit Mercy, where she was selected for their Orthodontic Program to complete her Master's and Certificate in Orthodontics. Outside the practice, she's spending time with her husband Jason and their two kids, Stevie and Cal &mdash; or trying a new restaurant with the latest NYT bestseller in hand.</p>
+        <p class="bio">Originally from Saginaw, Michigan, Dr. Hannah Collison&rsquo;s passion for orthodontics began with her own experience as a patient. Today, she is dedicated to helping others achieve confident smiles, healthy teeth, and lasting function.</p>
+        <p class="bio">Dr. Collison earned her Bachelor&rsquo;s degree in Biomedical Sciences from Central Michigan University (Fire Up, Chips!), followed by her DDS from the University of Detroit Mercy. She went on to complete her Master&rsquo;s of Science and Certificate in Orthodontics through UDM&rsquo;s prestigious orthodontic program.</p>
+        <p class="bio">She believes great orthodontic care goes beyond straight teeth, focusing on a healthy, functional bite and long-term dental health.</p>
+        <p class="bio">Outside the office, Dr. Collison enjoys spending time with her husband, Jason, and their two children, Stevie and Cal. She loves trying new restaurants, reading, and making memories with family and friends.</p>
         <div class="doctor-quote">"I'm thrilled to be part of your orthodontic journey."</div>
       </div>
     </div>
@@ -51,16 +69,14 @@
       <p>Familiar faces at every visit help make your experience feel easy and comfortable.</p>
     </div>
     <div class="team-grid">
-      <div class="team-card fade-up" data-name="April" data-role="Office Manager"><span class="team-initials">A</span><h3>April</h3><p>Office Manager</p>
+      <div class="team-card fade-up" data-name="April" data-role="Office Manager"><img class="team-photo" src="assets/img/team-april.jpg" alt="April" width="640" height="640" loading="lazy" decoding="async"><h3>April</h3><p>Office Manager</p>
         <!-- To switch on the profile modal for this person, add a bio here and
              swap .team-initials for an img.team-photo pointing at their headshot
         <div class="team-bio" hidden>Two or three sentences.</div> --></div>
-      <div class="team-card fade-up" data-name="Amanda" data-role="Patient Coordinator"><span class="team-initials">A</span><h3>Amanda</h3><p>Patient Coordinator</p></div>
-      <div class="team-card fade-up" data-name="Ashtyn" data-role="Orthodontic Assistant"><span class="team-initials">A</span><h3>Ashtyn</h3><p>Orthodontic Assistant</p></div>
-      <div class="team-card fade-up" data-name="Beth" data-role="Orthodontic Assistant"><span class="team-initials">B</span><h3>Beth</h3><p>Orthodontic Assistant</p></div>
+      <div class="team-card fade-up" data-name="Amanda" data-role="Patient Coordinator"><img class="team-photo" src="assets/img/team-amanda.jpg" alt="Amanda" width="640" height="640" loading="lazy" decoding="async"><h3>Amanda</h3><p>Patient Coordinator</p></div>
+      <div class="team-card fade-up" data-name="Ashtyn" data-role="Orthodontic Assistant"><img class="team-photo" src="assets/img/team-ashtyn.jpg" alt="Ashtyn" width="640" height="640" loading="lazy" decoding="async"><h3>Ashtyn</h3><p>Orthodontic Assistant</p></div>
+      <div class="team-card fade-up" data-name="Beth" data-role="Orthodontic Assistant"><img class="team-photo" src="assets/img/team-beth.jpg" alt="Beth" width="640" height="640" loading="lazy" decoding="async"><h3>Beth</h3><p>Orthodontic Assistant</p></div>
       <div class="team-card fade-up" data-name="Maddison" data-role="Orthodontic Assistant"><span class="team-initials">M</span><h3>Maddison</h3><p>Orthodontic Assistant</p></div>
-      <div class="team-card fade-up" data-name="Sandy" data-role="Orthodontic Assistant"><span class="team-initials">S</span><h3>Sandy</h3><p>Orthodontic Assistant</p></div>
-    </div>
   </div>
 </section>
 
@@ -81,28 +97,15 @@
   </div>
 </section>
 
-<section class="final-cta" id="book">
+<section class="final-cta compact" id="book">
   <div class="wrap fade-up">
     <h2>Ready to Love Your Smile?</h2>
-    <p>Send us a message and we'll text you right back — or call, whichever is easier.</p>
+    <p>Send us a message and we'll text you right back. Or call, whichever is easier.</p>
 
-    <!-- Weave's own contact form, embedded inline. Uses the public book.getweave.com
-         host, NOT the wsf-prod-1.wstack.net address the floating widget uses — that
-         one encodes their cluster and region and will move. Weave handles delivery
-         and the SMS consent wording; nothing is stored on this site.
-         The phone button below is the fallback if this ever stops loading. -->
-    <div class="weave-embed">
-      <div class="weave-fallback">
-        <p>The message form couldn't load — a browser extension may be blocking it.</p>
-        <a href="tel:9898942929">Call 989.894.2929</a>
-        <a href="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info" target="_blank" rel="noopener">Open the form in a new tab &rarr;</a>
-      </div>
-      <iframe src="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info?embeddedWidget=true"
-              title="Send Uptown Orthodontics a message" loading="lazy"></iframe>
-    </div>
 
     <div class="cta-actions">
       <a href="tel:9898942929" class="btn-primary">Call 989.894.2929</a>
+      <a href="https://book.getweave.com/311687a8-40cc-4693-926a-d9f46b904d2a/text-connect/contact-info" target="_blank" rel="noopener" class="btn-secondary cta-message">Send a Message</a>
     </div>
 
     <p class="cta-hours">Mon&ndash;Thu 7:30&nbsp;AM&ndash;4:30&nbsp;PM &middot; Fri 8&nbsp;AM&ndash;Noon (phones only)</p>

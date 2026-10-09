@@ -32,11 +32,21 @@ PAGES = {
         title='Orthodontic Treatments in Bay City, MI — Braces, Clear Aligners &amp; More',
         desc='Braces, clear aligners, early treatment, teen and adult orthodontics, surgery, '
              'retainers, 3D imaging and emergency care — with insurance and payment plans.'),
+    'financing': dict(
+        path='financing/',
+        title='Insurance &amp; Payment Plans | Uptown Orthodontics, Bay City MI',
+        desc='How we handle insurance, down payments and monthly plans, plus the free '
+             'consultation. Orthodontic payment options in Bay City, Michigan.'),
     'quiz': dict(
         path='quiz/',
         title='Smile Quiz — Where to Start | Uptown Orthodontics',
         desc='Not sure where to begin? Answer three quick questions and we will point you '
              'toward the right kind of orthodontic treatment. Bay City, MI.'),
+    'faq': dict(
+        path='faq/',
+        title='Patient FAQ: Common Questions | Uptown Orthodontics, Bay City MI',
+        desc='Straight answers about your first visit, insurance and payments, and what to '
+             'do when a bracket or wire comes loose. Uptown Orthodontics, Bay City, MI.'),
     'reviews': dict(
         path='reviews/',
         title='Patient Reviews — Uptown Orthodontics, Bay City MI',
@@ -45,7 +55,7 @@ PAGES = {
 }
 
 # Which nav entry is "here" for each page, so the current page is marked.
-CURRENT = {'index': None, 'about': 'About Us', 'treatments': 'Treatments',
+CURRENT = {'index': None, 'about': 'About Us', 'treatments': 'Treatments', 'faq': 'FAQ', 'financing': 'Treatments',
            'quiz': 'Smile Quiz', 'reviews': 'Reviews'}
 
 
@@ -73,9 +83,39 @@ VARIANT_WIDTHS = (400, 800, 1200)
 
 # `sizes` has to describe the layout or the browser guesses 100vw and picks the
 # largest file. Keyed by filename; the value is the CSS width of the slot.
+# ---- Google rating -------------------------------------------------------
+# The one place the score lives. It appeared in five spots across two pages
+# (the number, the star fill, the aria-label, the review count), which is four
+# chances to update it inconsistently. Change these two values and rebuild.
+RATING = 4.8
+REVIEW_COUNT = 20
+
+
+def rating_fill() -> str:
+    """Star fill as a percentage of the five-star row.
+
+    Exact only because .star-rating has no letter-spacing: the fill is a
+    percentage of the element's width, and the trailing space after each glyph
+    would make that percentage overstate the score. See the note on
+    .rating-banner .star-rating in site.css before adding any.
+    """
+    return f'{RATING / 5 * 100:g}%'
+
+
+def rating_label() -> str:
+    return f'{RATING:g} out of 5 stars'
+
+
 SIZES = {
     'doctors-portraits.jpg': '(max-width: 1240px) 100vw, 1200px',
     'default_grid':          '(max-width: 700px) 100vw, (max-width: 1240px) 50vw, 600px',
+}
+# Fixed-size images, where the default grid `sizes` would lie badly. A team
+# headshot renders at 104 CSS px; telling the browser it fills 50vw makes it
+# fetch a variant several times larger than the circle it lands in.
+FIXED_SIZES = {
+    'team-april.jpg': '104px', 'team-amanda.jpg': '104px',
+    'team-ashtyn.jpg': '104px', 'team-beth.jpg': '104px',
 }
 # Images small enough that variants would not pay for themselves.
 SKIP = {'logo.png', 'dr-collison-avatar.jpg', 'dr-lebourdais-avatar.jpg'}
@@ -126,9 +166,87 @@ def add_srcset(html: str) -> str:
         from PIL import Image
         full = Image.open(ROOT / 'assets' / 'img' / name).width
         srcset += f', assets/img/{name} {full}w'
-        sizes = SIZES.get(name, SIZES['default_grid'])
+        sizes = SIZES.get(name) or FIXED_SIZES.get(name) or SIZES['default_grid']
         return tag[:-1] + f' srcset="{srcset}" sizes="{sizes}">'
     return re.sub(r'<img\b[^>]*>', one, html)
+
+
+IMG_REF = re.compile(r'(/assets/img/[A-Za-z0-9._-]+\.(?:jpg|jpeg|png|webp|svg|gif))(\?v=[0-9a-f]{8})?')
+
+
+def _img_hash(rel: str, _cache={}) -> str:
+    """Content hash for one image under /assets/img/."""
+    if rel not in _cache:
+        f = ROOT / rel.lstrip('/')
+        _cache[rel] = hashlib.sha256(f.read_bytes()).hexdigest()[:8] if f.is_file() else None
+    return _cache[rel]
+
+
+def version_images(text: str) -> str:
+    """Append ?v=<content hash> to every /assets/img/ reference.
+
+    netlify.toml caches /assets/* for seven days. Images are replaced in place
+    under the same filename when a photo is updated, so without this a returning
+    visitor keeps the OLD photo for up to a week -- which is how the previous
+    exterior shot, still showing the old practice name, survived a swap. The
+    hash changes only when the bytes change, so the long cache still does its
+    job. Idempotent: an existing ?v= is stripped and recomputed.
+    """
+    def one(m):
+        rel, h = m.group(1), _img_hash(m.group(1))
+        return rel if h is None else f'{rel}?v={h}'
+    return IMG_REF.sub(one, text)
+
+
+def version_stylesheet_images() -> None:
+    """Same treatment for url() backgrounds inside assets/site.css.
+
+    Hero slides and the exterior banner are CSS backgrounds, which cannot take a
+    srcset and are not reachable from the HTML rewrite. Rewritten in place and
+    idempotently, so site.css stays the editable source of truth; its own ?v=
+    hash is computed afterwards and therefore reflects these edits.
+    """
+    f = ROOT / 'assets' / 'site.css'
+    css = f.read_text(encoding='utf-8')
+    out = version_images(css)
+    if out != css:
+        f.write_text(out, encoding='utf-8')
+
+
+def faq_jsonld(content: str) -> str:
+    """Build FAQPage structured data from the FAQ page's own <details> blocks.
+
+    Generated from the markup rather than maintained separately: Google requires
+    the structured data to match the visible answers, and a hand-kept copy drifts
+    the first time a question is reworded. Questions with no answer yet simply are
+    not in the markup, so they cannot leak into the schema either.
+
+    None of the local competitors publish FAQPage data -- Copus has 27 questions
+    and no structured data at all -- so this is cheap ground to take.
+    """
+    import html as _html, json as _json
+    pairs = re.findall(
+        r'<details class="faq-item">\s*<summary>(.*?)</summary>\s*<p>(.*?)</p>',
+        content, re.S)
+    if not pairs:
+        return ''
+
+    def plain(fragment: str) -> str:
+        text = re.sub(r'<[^>]+>', '', fragment)
+        text = _html.unescape(text).replace('\u00a0', ' ')
+        return ' '.join(text.split())
+
+    data = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': [
+            {'@type': 'Question', 'name': plain(q),
+             'acceptedAnswer': {'@type': 'Answer', 'text': plain(a)}}
+            for q, a in pairs
+        ],
+    }
+    return ('\n<script type="application/ld+json">\n'
+            + _json.dumps(data, indent=2, ensure_ascii=False) + '\n</script>\n')
 
 
 def asset_version(name: str) -> str:
@@ -146,6 +264,8 @@ def asset_version(name: str) -> str:
 
 def build() -> int:
     layout = (SRC / 'layout.html').read_text(encoding='utf-8')
+    # Must precede asset_version('site.css') so the stylesheet hash covers it.
+    version_stylesheet_images()
     cssv, jsv = asset_version('site.css'), asset_version('site.js')
     nav = (SRC / 'nav.html').read_text(encoding='utf-8').strip()
     footer = (SRC / 'footer.html').read_text(encoding='utf-8').strip()
@@ -154,6 +274,8 @@ def build() -> int:
     written = 0
     for page, meta in PAGES.items():
         content = (SRC / 'pages' / f'{page}.html').read_text(encoding='utf-8').strip()
+        if page == 'faq':
+            content += faq_jsonld(content)
         html = (layout
                 .replace('{{TITLE}}', meta['title'])
                 .replace('{{DESC}}', meta['desc'])
@@ -163,7 +285,11 @@ def build() -> int:
                 .replace('{{CONTENT}}', content)
                 .replace('{{FOOTER}}', footer)
                 .replace('{{CSSV}}', cssv)
-                .replace('{{JSV}}', jsv))
+                .replace('{{JSV}}', jsv)
+                .replace('{{RATING}}', f'{RATING:g}')
+                .replace('{{RATING_FILL}}', rating_fill())
+                .replace('{{RATING_LABEL}}', rating_label())
+                .replace('{{REVIEW_COUNT}}', str(REVIEW_COUNT)))
         html = add_srcset(html)
         left = re.findall(r'\{\{[A-Z]+\}\}', html)
         if left:
@@ -175,6 +301,7 @@ def build() -> int:
         # Not just quote-preceded: srcset entries are comma-separated, so match
         # any bare 'assets/' that is not already rooted.
         html = re.sub(r'(?<![/\w-])assets/', '/assets/', html)
+        html = version_images(html)
         html = re.sub(r'(?<=href=")(?!https?:|mailto:|tel:|sms:|#|/)([a-z-]+)\.html', r'/\1/', html)
         html = html.replace('href="/index"', 'href="/"')
         out = ROOT / 'index.html' if page == 'index' else ROOT / page / 'index.html'

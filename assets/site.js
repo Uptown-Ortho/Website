@@ -47,7 +47,8 @@
     if (!onHome) return;
     e.preventDefault();
     closeNavMenu();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
   });
 
   // hero rotating background
@@ -91,13 +92,35 @@
     const before = slider.querySelector('.ba-before');
     const handle = slider.querySelector('.ba-handle');
     let dragging = false;
-    function setPos(clientX) {
-      const rect = slider.getBoundingClientRect();
-      let pct = ((clientX - rect.left) / rect.width) * 100;
-      pct = Math.max(0, Math.min(100, pct));
+    let pct = 50;
+    // The handle was a bare <div>: draggable with a mouse or finger and operable
+    // by nothing else, which is a WCAG 2.1.1 (Keyboard, Level A) failure. Giving
+    // it slider semantics and arrow keys costs nothing visually.
+    handle.setAttribute('role', 'slider');
+    handle.setAttribute('tabindex', '0');
+    handle.setAttribute('aria-label', 'Reveal more of the before or after photo');
+    handle.setAttribute('aria-valuemin', '0');
+    handle.setAttribute('aria-valuemax', '100');
+    handle.setAttribute('aria-orientation', 'horizontal');
+    function setPct(next) {
+      pct = Math.max(0, Math.min(100, next));
       before.style.width = pct + '%';
       handle.style.left = pct + '%';
+      handle.setAttribute('aria-valuenow', Math.round(pct));
+      handle.setAttribute('aria-valuetext', Math.round(pct) + '% before, ' + Math.round(100 - pct) + '% after');
     }
+    function setPos(clientX) {
+      const rect = slider.getBoundingClientRect();
+      setPct(((clientX - rect.left) / rect.width) * 100);
+    }
+    setPct(pct);
+    handle.addEventListener('keydown', e => {
+      const step = { ArrowLeft: -5, ArrowRight: 5, ArrowDown: -5, ArrowUp: 5,
+                     PageDown: -20, PageUp: 20, Home: -100, End: 100 }[e.key];
+      if (step === undefined) return;
+      e.preventDefault();
+      setPct(e.key === 'Home' ? 0 : e.key === 'End' ? 100 : pct + step);
+    });
     slider.addEventListener('mousedown', e => { dragging = true; setPos(e.clientX); });
     window.addEventListener('mousemove', e => { if (dragging) setPos(e.clientX); });
     window.addEventListener('mouseup', () => dragging = false);
@@ -120,21 +143,171 @@
     let idx = 0;
     for (let i = 0; i < slides.length; i++) {
       const b = document.createElement('button');
-      if (i === 0) b.classList.add('active');
+      // Without a label these announce as bare unlabelled buttons (WCAG 4.1.2).
+      b.type = 'button';
+      b.setAttribute('aria-label', `Show review ${i + 1} of ${slides.length}`);
+      if (i === 0) { b.classList.add('active'); b.setAttribute('aria-current', 'true'); }
       b.addEventListener('click', () => { goTo(i); restartCarousel(); });
       dotsWrap.appendChild(b);
     }
     function goTo(i) {
       idx = i;
       track.style.transform = `translateX(-${i * 100}%)`;
-      [...dotsWrap.children].forEach((d, di) => d.classList.toggle('active', di === i));
+      [...dotsWrap.children].forEach((d, di) => {
+        d.classList.toggle('active', di === i);
+        if (di === i) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current');
+      });
     }
-    let carTimer = setInterval(() => goTo((idx + 1) % slides.length), 6000);
-    function restartCarousel() {
+    // WCAG 2.2.2 (Pause, Stop, Hide) is Level A: content that moves on its own for
+    // more than five seconds must be pausable. It also just reads badly -- the
+    // quote was being pulled away mid-sentence on the one page people come to in
+    // order to read. So: never auto-advance for someone who asked for reduced
+    // motion, and pause while a pointer is over it or focus is inside it.
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const carousel = track.closest('.carousel') || track.parentElement;
+    let carTimer = null;
+    // Hover and keyboard focus are separate reasons to hold, and collapsing them
+    // into one flag broke it: focusin fires BEFORE click, so clicking a dot set
+    // the flag, and the restart in the click handler was then refused by that
+    // same flag. The carousel stopped for good. Keyboard focus is also checked
+    // with :focus-visible, so a mouse click does not count as "tabbed into it".
+    let hovering = false, keyboardIn = false;
+    const canRun = () => !hovering && !keyboardIn && !document.hidden && !reduceMotion.matches;
+    function startCarousel() {
+      if (carTimer || !canRun()) return;
+      carTimer = setInterval(() => goTo((idx + 1) % slides.length), 4500);
+    }
+    function stopCarousel() {
       clearInterval(carTimer);
-      carTimer = setInterval(() => goTo((idx + 1) % slides.length), 6000);
+      carTimer = null;
+    }
+    function restartCarousel() {
+      stopCarousel();
+      startCarousel();
+    }
+    carousel.addEventListener('mouseenter', () => { hovering = true; stopCarousel(); });
+    carousel.addEventListener('mouseleave', () => { hovering = false; startCarousel(); });
+    carousel.addEventListener('focusin', e => {
+      if (e.target.matches(':focus-visible')) { keyboardIn = true; stopCarousel(); }
+    });
+    carousel.addEventListener('focusout', e => {
+      if (!carousel.contains(e.relatedTarget)) { keyboardIn = false; startCarousel(); }
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopCarousel(); else startCarousel();
+    });
+    reduceMotion.addEventListener('change', () => {
+      if (reduceMotion.matches) stopCarousel(); else startCarousel();
+    });
+    startCarousel();
+
+  }
+
+  // Dr. Collison's portrait slot: crossfades her professional shot with the
+  // family photo, matching the slider the practice's current site uses. Same
+  // rules as the testimonial carousel, for the same reason (WCAG 2.2.2): dots
+  // to control it, pause on hover and focus, and no rotation at all for someone
+  // who asked their OS for reduced motion.
+  if (document.getElementById('collisonPhotos')) {
+    const slot = document.getElementById('collisonPhotos');
+    const shots = [...slot.querySelectorAll('.doc-shot')];
+    const dotWrap = slot.querySelector('.doc-rotator-dots');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // Separate flags, for the reason spelled out on the carousel above.
+    let i = 0, timer = null, hovering = false, keyboardIn = false;
+
+    dotWrap.removeAttribute('aria-hidden');
+    const dots = shots.map((img, n) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', n === 0 ? 'Show Dr. Collison' : 'Show Dr. Collison with her family');
+      b.setAttribute('aria-pressed', n === 0 ? 'true' : 'false');
+      b.addEventListener('click', () => { show(n); restart(); });
+      dotWrap.appendChild(b);
+      return b;
+    });
+
+    function show(n) {
+      i = n;
+      shots.forEach((s, k) => s.classList.toggle('is-on', k === n));
+      dots.forEach((d, k) => d.setAttribute('aria-pressed', k === n ? 'true' : 'false'));
+    }
+    function start() {
+      if (timer || hovering || keyboardIn || document.hidden || reduce.matches) return;
+      timer = setInterval(() => show((i + 1) % shots.length), 4000);
+    }
+    function stop() { clearInterval(timer); timer = null; }
+    function restart() { stop(); start(); }
+
+    slot.addEventListener('mouseenter', () => { hovering = true; stop(); });
+    slot.addEventListener('mouseleave', () => { hovering = false; start(); });
+    slot.addEventListener('focusin', e => {
+      if (e.target.matches(':focus-visible')) { keyboardIn = true; stop(); }
+    });
+    slot.addEventListener('focusout', e => {
+      if (!slot.contains(e.relatedTarget)) { keyboardIn = false; start(); }
+    });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
+    reduce.addEventListener('change', () => { if (reduce.matches) stop(); else start(); });
+    start();
+  }
+
+  // FAQ tabs. The markup ships every panel visible so the page works without
+  // JavaScript and prints in full; this upgrades it into a real tablist.
+  if (document.getElementById('faqTabs')) {
+    const tablist = document.getElementById('faqTabs');
+    const tabs = [...tablist.querySelectorAll('.faq-tab')];
+    const panels = tabs.map(t => document.getElementById(t.dataset.panel));
+
+    tablist.setAttribute('role', 'tablist');
+    tablist.setAttribute('aria-label', 'Question categories');
+
+    function select(i, focus) {
+      tabs.forEach((t, n) => {
+        const on = n === i;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        // Only the selected tab is in the tab order; arrows move between them.
+        t.setAttribute('tabindex', on ? '0' : '-1');
+        panels[n].hidden = !on;
+      });
+      if (focus) tabs[i].focus();
     }
 
+    tabs.forEach((t, i) => {
+      const panel = panels[i];
+      t.id = t.id || `faqtab-${t.dataset.panel}`;
+      t.setAttribute('role', 'tab');
+      t.setAttribute('aria-controls', panel.id);
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', t.id);
+      panel.setAttribute('tabindex', '0');
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', e => {
+        const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+        if (step === undefined && e.key !== 'Home' && e.key !== 'End') return;
+        e.preventDefault();
+        const next = e.key === 'Home' ? 0
+          : e.key === 'End' ? tabs.length - 1
+          : (i + step + tabs.length) % tabs.length;
+        select(next, true);
+      });
+    });
+
+    // Deep links. The nav drops down to #money, and unlike the other dropdowns
+    // this one switches a tab in place instead of scrolling the page, so the
+    // hash has to drive the tabs rather than the browser's anchor jump.
+    function fromHash(focus) {
+      const id = location.hash.slice(1);
+      const i = tabs.findIndex(t => t.dataset.panel === id);
+      if (i === -1) return false;
+      select(i, focus);
+      // Nothing to scroll to: the panel is already at the top of the card.
+      document.querySelector('.faq-card').scrollIntoView({ block: 'start' });
+      return true;
+    }
+
+    if (!fromHash(false)) select(0);
+    window.addEventListener('hashchange', () => fromHash(false));
   }
 
   // smile quiz
