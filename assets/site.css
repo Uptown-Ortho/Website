@@ -142,13 +142,41 @@
   .hero-bg { position: absolute; inset: 0; z-index: 0; }
   .hero-bg .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.4s ease; }
   .hero-bg .slide.active { opacity: 1; }
-  /* background-position: center is wrong for hero-2. A phone hero is 375x771, so
-     cover keeps only the middle 21% of a 1400px-wide photo — and Dr. Collison
-     sits right of centre, so she was cropped out of her own slide entirely: an
-     arm at the edge and a draped patient. 70% keeps both faces. It suits the
-     desktop crop too, where the text sits over the dark left of the gradient. */
-  .hero-bg .slide[data-src="hero-2"] { background-position: 70% center; }
+  /* background-position: center is wrong for hero-2. A phone hero is 375x765, so
+     cover keeps only about a third of the width — and Dr. Collison sits right of
+     center, so she was cropped out of her own slide entirely: an arm at the edge
+     and a draped patient.
+     70% was measured against the PREVIOUS hero-2, a different photograph at a
+     different aspect ratio. Against the current one it pushes past her and fills
+     the top of the frame with the back of her head. 62% is the re-measured
+     value: her face and glasses read, the Uptown mark on her scrubs is legible,
+     and the patient stays in frame. Re-check this whenever the photo changes. */
+  .hero-bg .slide[data-src="hero-2"] { background-position: 62% center; }
   .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(28,43,58,0.82) 0%, rgba(28,43,58,0.62) 42%, rgba(28,43,58,0.25) 75%); }
+  /* On a phone this 100deg wash is the wrong shape for the content. The angle
+     is nearly horizontal, so on a 375x765 hero it darkens the whole left side
+     to 0.82 and only clears at the far right, where there is no photo worth
+     seeing. The result reads as murk: measured over both slides, the copy sat
+     at 1.55:1 against its own backdrop at worst, which is not legible and not
+     close to the 4.5:1 it needs.
+     Mobile gets a banded vertical scrim instead: nearly clear at the very top
+     and at the foot, strong only through the band the copy actually occupies
+     (measured at 147-655 of 765). That buys back real photograph at both ends
+     AND raises the worst-case text contrast to 7.03:1.
+     The filter is what the client asked for by "make it pop": the punch comes
+     from the photo's own local contrast rather than from thinning the scrim,
+     so legibility improves at the same time. Saturate stays modest because
+     these are clinical photos with skin tones in them. */
+  @media (max-width: 700px) {
+    .hero-bg .slide { filter: brightness(1.16) contrast(1.24) saturate(1.12); }
+    .hero-bg::after {
+      background: linear-gradient(180deg,
+        rgba(28,43,58,0.12) 0%,
+        rgba(28,43,58,0.89) 17%,
+        rgba(28,43,58,0.85) 86%,
+        rgba(28,43,58,0.07) 100%);
+    }
+  }
   .hero-dots { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; gap: 8px; }
   /* The visual dot stays 22x3; padding + content-box grows the TOUCH target to
      30x31 without changing how it looks. WCAG 2.5.8 wants 24x24 minimum, and a
@@ -164,30 +192,49 @@
   .trust-badges { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 30px; }
   .trust-badges .badge { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: rgba(248,247,243,0.85); font-weight: 500; }
   .trust-badges .stars { color: var(--coral); letter-spacing: 1px; }
-  .badge-link { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: rgba(248,247,243,0.5); transition: text-decoration-color 0.2s; }
+  /* 24px target: the link sat at 21px. Inline-block plus the cancelling margin
+     keeps it on the badge's baseline. */
+  .badge-link { display: inline-block; padding: 2px 0; margin: -2px 0; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: rgba(248,247,243,0.5); transition: text-decoration-color 0.2s; }
   .badge-link:hover { text-decoration-color: var(--coral); }
   @media (max-width: 900px) { .hero { min-height: 560px; } }
 
   /* TRUST RIBBON */
   .trust-ribbon { background: var(--blue-tint); border-top: 1px solid rgba(28,43,58,0.06); border-bottom: 1px solid rgba(28,43,58,0.06); padding: 40px 0; }
-  .trust-ribbon .wrap { display: grid; grid-template-columns: repeat(5,1fr); gap: 20px; text-align: center; }
+  .trust-ribbon .wrap { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; text-align: center; }
   .trust-item .icon { width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 50%; background: var(--white); display: flex; align-items: center; justify-content: center; color: var(--navy); font-family: 'Lora',Georgia,serif; font-size: 1.1rem; box-shadow: 0 4px 14px rgba(28,43,58,0.08); }
   .trust-item .t-label { font-size: 0.82rem; font-weight: 600; color: var(--ink); }
   /* Linked, but deliberately not styled as buttons — they stay a reassurance band. */
   a.trust-item { cursor: pointer; }
   a.trust-item .icon { transition: transform 0.2s, box-shadow 0.2s; }
   a.trust-item:hover .icon { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(28,43,58,0.12); }
-  /* Five items never divide into two columns: the fifth is stranded alone on its
-     own row, which is what it did at every width from 700 to 860 as well. Below
-     860 go to a single column with the icon beside the label, the same shape the
-     treatment cards use, so five rows stay compact instead of becoming five
-     stacked blocks. Above it, five columns divide exactly. */
+  /* Four items, down from five: the client dropped "State-of-the-Art
+     Technology". Four is the number that divides, so this is now 4 across on
+     desktop and a clean 2x2 below 860 with no stranded tile and no row-spanning
+     fix. If a fifth is ever added back, the odd one out needs
+     `grid-column: 1 / -1` on the last item again, or it sits alone beside a gap.
+
+     Below 860 the icon moves beside the label, the same shape the treatment
+     cards use, so the band stays short instead of becoming a stack of blocks. */
   @media (max-width: 860px) {
     .trust-ribbon { padding: 26px 0; }
-    .trust-ribbon .wrap { grid-template-columns: 1fr; gap: 12px; text-align: left; }
-    .trust-item { display: flex; align-items: center; gap: 13px; }
-    .trust-item .icon { width: 38px; height: 38px; margin: 0; flex: none; }
-    .trust-item .t-label { font-size: 0.9rem; }
+    /* minmax(0,1fr), not 1fr. A bare 1fr is minmax(auto,1fr), so the longest
+       label's min-content width pushes its column wider and the two halves
+       come out 191/143 instead of even.
+       The labels carry a hard <br> and it stays. There is no whitespace around
+       it in the markup, so hiding it does not reflow the text, it welds the
+       words together: "AAO MemberOrthodontists". The authored break is also
+       the right one for a narrow column. */
+    .trust-ribbon .wrap { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; text-align: left; }
+    .trust-item { display: flex; align-items: center; gap: 11px; }
+    .trust-item .icon { width: 36px; height: 36px; margin: 0; flex: none; font-size: 1rem; }
+    .trust-item .t-label { font-size: 0.84rem; line-height: 1.3; }
+  }
+  /* Below about 360px two columns leave roughly 75px for the label once the
+     icon and gap are taken out, and "Orthodontists" alone needs about 88px.
+     Small Androids and the old SE are still out there, so they get the single
+     column back rather than a broken word. */
+  @media (max-width: 359px) {
+    .trust-ribbon .wrap { grid-template-columns: 1fr; }
   }
 
   /* DOCTOR */
@@ -355,10 +402,25 @@
 
   /* FINANCING */
   /* SMILE QUIZ */
-  .quiz-section { background: linear-gradient(155deg, var(--navy), var(--navy-dark)); }
+  /* This section is measured against viewport HEIGHT, not width. Every other
+     section fails by getting cramped sideways, which is why the whole fluid
+     scale is built on vw. The quiz fails a different way: it pushes an answer
+     below the fold. So the phone pass, which was all width, left the desktop
+     broken. At 1440x900 the old values spent 436px above the card and put the
+     last option at 789px, so the third answer needed a scroll on any laptop.
+     The vh term in each clamp buys that space back on a short screen and keeps
+     the generous spacing on a tall one. Only spacing is height-aware: a short
+     wide window has no trouble reading 1.5rem, so type stays width-driven. */
+  .quiz-section { background: linear-gradient(155deg, var(--navy), var(--navy-dark)); padding: clamp(28px, 4.2vh, 80px) 0; }
+  .quiz-section .section-head { margin-bottom: clamp(18px, 2.8vh, 42px); }
+  .quiz-section .section-head h1 { font-size: clamp(1.5rem, 1rem + 1.8vh, 2.3rem); }
   .quiz-section .section-head p { color: rgba(248,247,243,0.7); }
-  .quiz-card { max-width: 620px; margin: 0 auto; background: var(--white); border-radius: 26px; padding: 44px 40px; box-shadow: 0 30px 70px rgba(0,0,0,0.35); min-height: 380px; display: flex; flex-direction: column; }
-  .quiz-progress { display: flex; gap: 6px; margin-bottom: 30px; }
+  /* min-height is removed rather than reduced: content already exceeded 380px
+     on all three question steps, so it reserved nothing and only risked dead
+     space on the result step. The card now grows 66px between the 3- and
+     4-option steps, which is how the phone has behaved since the mobile pass. */
+  .quiz-card { max-width: 620px; margin: 0 auto; background: var(--white); border-radius: 26px; padding: clamp(24px, 3.4vh, 44px) 40px; box-shadow: 0 30px 70px rgba(0,0,0,0.35); display: flex; flex-direction: column; }
+  .quiz-progress { display: flex; gap: 6px; margin-bottom: clamp(16px, 2.4vh, 30px); }
   .quiz-progress span { flex: 1; height: 4px; border-radius: 3px; background: var(--blue-tint); overflow: hidden; }
   .quiz-progress span i { display: block; height: 100%; width: 0%; background: var(--coral); transition: width 0.4s ease; }
   .quiz-progress span.done i { width: 100%; }
@@ -366,24 +428,13 @@
   .quiz-step { display: none; flex: 1; flex-direction: column; }
   .quiz-step.active { display: flex; animation: qfade 0.35s ease; }
   @keyframes qfade { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: translateX(0); } }
-  .quiz-step .q-label { font-size: 0.78rem; color: var(--coral-text); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
-  .quiz-step h2, .quiz-step h3 { font-size: 1.5rem; margin-bottom: 22px; }
-  .quiz-options { display: grid; gap: 12px; margin-bottom: auto; }
-  /* 44px/40px padding on a 326px card leaves only 246px for the question, and
-     the 380px min-height (there so the card does not jump between steps with
-     different option counts) then sits mostly empty. Tighten both on a phone;
-     min-height is re-set to the tallest step at this width, measured. */
-  @media (max-width: 700px) {
-    .quiz-card { padding: 26px 20px; border-radius: 20px; min-height: 0; }
-    .quiz-step h2, .quiz-step h3 { font-size: 1.25rem; margin-bottom: 16px; }
-    .quiz-progress { margin-bottom: 20px; }
-    .quiz-opt { padding: 14px 16px; }
-    .quiz-nav { margin-top: 18px; }
-  }
-  .quiz-opt { text-align: left; padding: 16px 20px; border-radius: 14px; border: 1.5px solid rgba(28,43,58,0.14); background: var(--paper); font-family: 'Inter', sans-serif; font-size: 0.98rem; font-weight: 600; color: var(--ink); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+  .quiz-step .q-label { font-size: 0.78rem; color: var(--coral-text); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: clamp(6px, 1vh, 10px); }
+  .quiz-step h2, .quiz-step h3 { font-size: 1.5rem; margin-bottom: clamp(14px, 2vh, 22px); }
+  .quiz-options { display: grid; gap: clamp(9px, 1.3vh, 12px); margin-bottom: auto; }
+  .quiz-opt { text-align: left; padding: clamp(13px, 1.7vh, 16px) 20px; border-radius: 14px; border: 1.5px solid rgba(28,43,58,0.14); background: var(--paper); font-family: 'Inter', sans-serif; font-size: 0.98rem; font-weight: 600; color: var(--ink); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
   .quiz-opt:hover { border-color: var(--navy); }
   .quiz-opt.selected { border-color: var(--coral); background: var(--blue-tint); }
-  .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 26px; }
+  .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: clamp(16px, 2.2vh, 26px); }
   /* Padded to a 44px-tall touch target; the negative margin keeps the visual
      position unchanged. */
   .quiz-back { font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; background: none; border: none; padding: 14px 10px; margin: -14px -10px; }
@@ -393,7 +444,34 @@
   .quiz-result p { color: var(--ink-soft); margin-bottom: 18px; }
   .quiz-result-item { display: flex; gap: 10px; align-items: flex-start; text-align: left; font-size: 0.92rem; color: var(--ink); background: var(--blue-tint); border-radius: 12px; padding: 12px 14px; }
   .quiz-result-item b { color: var(--navy); flex-shrink: 0; }
-  .quiz-note { text-align: center; font-size: 0.72rem; color: var(--ink-soft); margin-top: 18px; }
+  .quiz-note { text-align: center; font-size: 0.72rem; color: var(--ink-soft); margin-top: clamp(12px, 1.6vh, 18px); }
+
+  /* The width-driven part: side padding, the smaller radius, and type that
+     would wrap badly on a phone. The vertical half of what used to be here is
+     now handled by the height-aware clamps above.
+     This block sits AFTER .quiz-opt on purpose. It used to sit before it, and
+     because a media query carries no extra specificity the later base rule won
+     on equal weight, so the phone option padding in it had never once applied.
+     Anything overriding .quiz-opt or .quiz-nav has to come after them. */
+  @media (max-width: 700px) {
+    .quiz-card { padding-left: 20px; padding-right: 20px; border-radius: 20px; }
+    .quiz-step h2, .quiz-step h3 { font-size: 1.25rem; }
+    .quiz-opt { padding-left: 16px; padding-right: 16px; }
+  }
+
+  /* Below roughly 760px of viewport the clamps above have all bottomed out and
+     the only thing still costing height is the marketing copy stacked on top of
+     the form: a two-line h1 and an intro sentence, about 100px together. On a
+     window that short the question matters more than the pitch, so the intro
+     sentence stops being painted. It stays in the DOM, so it is still indexed
+     and still read by a screen reader. Measured: a 1512x640 window had the
+     fourth option at 665px with nowhere to go, and lands at 571px with this. */
+  @media (max-height: 760px) {
+    .quiz-section { padding-top: 24px; }
+    .quiz-section .section-head { margin-bottom: 16px; }
+    .quiz-section .section-head h1 { font-size: 1.45rem; }
+    .quiz-section .section-head p { display: none; }
+  }
 
   .exterior-banner { width: 100%; aspect-ratio: 3.41/1; background-size: cover; background-position: center; }
   @media (max-width: 700px) { .exterior-banner { aspect-ratio: 16/9; } }
@@ -427,6 +505,8 @@
   .info-row { display: flex; gap: 16px; padding: 16px 0; border-top: 1px solid rgba(28,43,58,0.1); }
   .info-row:last-of-type { border-bottom: 1px solid rgba(28,43,58,0.1); margin-bottom: 26px; }
   .info-row .mono { min-width: 90px; color: var(--navy); }
+  /* Same 24px target fix as the footer: these sat at 20px tall. */
+  .info-row a { display: inline-block; padding: 3px 0; margin: -3px 0; }
   @media (max-width: 860px) { .location .wrap { grid-template-columns: 1fr; } }
 
   /* FINAL CTA */
@@ -478,7 +558,12 @@
   /* The address, phone and hours are the most-wanted details on a local
      practice's site. At 0.5 opacity they measured 2.98:1 — below the 4.5 AA
      needs, and the reason the footer read as faded. */
-  footer a.mono { color: var(--navy); font-weight: 600; }
+  /* Padded to clear the 24px minimum target size (WCAG 2.5.8). These measured
+     17-19px tall, and they are standalone links in a list rather than links
+     inside a sentence, so the "inline" exemption does not cover them. The
+     negative margin cancels the padding so the footer looks identical; the same
+     trick as .quiz-back and .social-link. */
+  footer a.mono { color: var(--navy); font-weight: 600; display: inline-block; padding: 6px 0; margin: -6px 0; }
   footer a.mono:hover { color: var(--navy-dark); text-decoration: underline; }
   /* Full brand colors on purpose — people identify these by color before shape. */
   .social { display: flex; gap: 10px; margin-top: 6px; }
@@ -491,16 +576,23 @@
   .about-head .section-head { margin-bottom: 0; }
 
   /* CSS backgrounds cannot take a srcset, so pick by media query instead. A phone
-     was pulling the full 1600px banner and the full-width hero slides. */
+     was pulling the full 1600px banner and the full-width hero slides.
+
+     These widths are CSS pixels; the hero is full-bleed, so what it actually
+     needs is DEVICE pixels. A 375pt phone at 3x wants 1125 real pixels across,
+     and the 800px file it used to get was stretched about 1.4x past its own
+     resolution before it even started covering 600px of height. That is the
+     "a little blurry" the client's husband reported, and it was not the photo.
+     1200 covers every phone from 375 to 430 at 3x with a slight downscale,
+     which is the right side of sharp to be on. Above 700 the full file wins on
+     every screen we are likely to meet, so there is no second breakpoint. */
   @media (max-width: 700px) {
     .exterior-banner { background-image: url('/assets/img/exterior-700.jpg?v=59c427b4') !important; }
-    .hero-bg .slide[data-src="hero-1"] { background-image: url('/assets/img/hero-1-800.jpg?v=26d06cf6') !important; }
-    .hero-bg .slide[data-src="hero-2"] { background-image: url('/assets/img/hero-2-800.jpg?v=b8896329') !important; }
+    .hero-bg .slide[data-src="hero-1"] { background-image: url('/assets/img/hero-1-1200.jpg?v=066d5402') !important; }
+    .hero-bg .slide[data-src="hero-2"] { background-image: url('/assets/img/hero-2-1200.jpg?v=cfc18d3e') !important; }
   }
   @media (min-width: 701px) and (max-width: 1200px) {
     .exterior-banner { background-image: url('/assets/img/exterior-1100.jpg?v=23118756') !important; }
-    .hero-bg .slide[data-src="hero-1"] { background-image: url('/assets/img/hero-1-1200.jpg?v=066d5402') !important; }
-    .hero-bg .slide[data-src="hero-2"] { background-image: url('/assets/img/hero-2-1200.jpg?v=80d456fc') !important; }
   }
 
   /* Weave's chat button is fixed over the bottom ~118px of the viewport at max
@@ -514,22 +606,38 @@
   /* Her family photo, at the foot of her bio — matching where their old site put it. */
   /* The joint banner is two slots, not one composed image, so Dr. Collison's
      half can crossfade between her professional shot and the family photo the
-     way the practice's current site does. Each half is roughly square, half of
-     the 2.06 the composed banner used. The three sources are 0.67, 0.80 and
-     0.67, so the slot fixes the ratio and object-fit crops to it; the family
-     group needs the crop biased high or it loses faces. */
+     way the practice's current site does.
+
+     The slot ratio is the whole ballgame here, so the arithmetic is written out.
+     All three sources are 2:3 portraits (0.667). A slot of ratio R crops away
+     1 - (0.667 / R) of the image height, and object-position decides how much
+     of that loss comes off the top:
+
+        R = 1.03  ->  35.2% cropped, and at "center 18%" that is 6.3% off the top
+        R = 0.85  ->  21.5% cropped, and at "center 14%" that is  3.0% off the top
+
+     Measured on the sources, the subject starts 5.7% down the frame for
+     Dr. LeBourdais and 5.0% for Dr. Collison. So the old near-square slot took
+     6.3% off the top and clipped the top of both their heads, hers worse than
+     his because she had the smaller margin. Any value of R near 1 does this:
+     a 2:3 portrait forced to a square has to lose a third of itself, and a
+     studio headshot has nowhere near that much room to spare at the top.
+
+     At R = 0.85 the crop is small enough that 14% of it still clears both
+     heads with about 2 points to spare, and the photos read as portraits,
+     which is what they are. */
   .doctor-photo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
     margin-bottom: 44px; }
-  .doc-slot { position: relative; aspect-ratio: 1.03; border-radius: 18px;
+  .doc-slot { position: relative; aspect-ratio: 0.85; border-radius: 18px;
     overflow: hidden; background: var(--blue-tint); margin: 0; }
   .doc-slot > img { width: 100%; height: 100%; object-fit: cover; display: block;
-    object-position: center 18%; }
+    object-position: center 14%; }
   .doc-slot > .doc-shot { position: absolute; inset: 0; opacity: 0; transition: opacity 0.9s ease;
-    object-position: center 20%; }
-  /* Biased further down the frame than the headshot: at 25% the crop cut the
-     children off mid-leg. 42% keeps the whole group with headroom to spare;
-     past about 50% the top of his head reaches the edge. */
-  .doc-slot > .doc-shot-family { object-position: center 42%; }
+    object-position: center 14%; }
+  /* The group starts 15.0% down its frame, so it can take a much deeper top
+     crop than a headshot. 55% of the 21.5% loss is 11.8% off the top, which
+     clears the group and spends the rest on the floor below them. */
+  .doc-slot > .doc-shot-family { object-position: center 55%; }
   /* No JS: the professional shot stays, which is the one that belongs here. */
   .doc-slot > .doc-shot.is-on { opacity: 1; }
 
@@ -587,6 +695,10 @@
     border-bottom: 1.5px solid rgba(42,81,148,0.35); }
 
   .faq-body { padding: 44px 0 72px; }
+  /* The global scroll-margin is on section[id], and the four tab deep links in
+     the nav target panel divs inside this card instead, so they were landing
+     under the 79px sticky nav. The offset has to live here too. */
+  .faq-card, .faq-panel { scroll-margin-top: 90px; }
   .faq-card { max-width: 800px; margin: 0 auto; background: var(--white);
     border: 1px solid rgba(28,43,58,0.07); border-radius: 22px;
     padding: 10px 32px 14px; }

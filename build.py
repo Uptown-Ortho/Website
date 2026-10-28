@@ -120,6 +120,68 @@ FIXED_SIZES = {
 # Images small enough that variants would not pay for themselves.
 SKIP = {'logo.png', 'dr-collison-avatar.jpg', 'dr-lebourdais-avatar.jpg'}
 
+# Background images that only ever appear in site.css, picked by media query
+# because a CSS background cannot take a srcset.
+#
+# These need naming explicitly because make_variants() is otherwise only ever
+# reached from add_srcset(), which walks <img> tags. Nothing walks the
+# stylesheet, so a background image's variants were never regenerated:
+# hero-2.jpg was replaced on 2026-10-08 and every screen at 1200px or narrower
+# kept serving a *different photograph* from 2026-09-10 until the client
+# spotted it on her phone six weeks later. She read it as "the update hasn't
+# reached the phone version", which was exactly right.
+#
+# Anything the stylesheet points at by hand belongs here.
+# The 400 and 800 hero files are not referenced by any rule today. They are
+# regenerated anyway, because leaving them behind as the *previous* photograph
+# under a current-looking name is the trap that caused this in the first place:
+# a file called hero-2-800.jpg should never be anything but hero-2.
+CSS_BACKGROUNDS = {
+    'hero-1.jpg': (400, 800, 1200),
+    'hero-2.jpg': (400, 800, 1200),
+    'exterior.jpg': (700, 1100),
+}
+
+
+def build_css_background_variants() -> list:
+    """Regenerate variants for images referenced only from the stylesheet.
+
+    Returns a list of human-readable notes about what was rebuilt, so a stale
+    variant is reported at build time rather than discovered by the client.
+    """
+    try:
+        from PIL import Image
+    except ImportError:
+        return ['PIL missing: CSS background variants not checked']
+    notes = []
+    for name, widths in CSS_BACKGROUNDS.items():
+        src = ROOT / 'assets' / 'img' / name
+        if not src.exists():
+            notes.append(f'{name}: MISSING')
+            continue
+        im = Image.open(src)
+        stem, ext = name.rsplit('.', 1)
+        for w in widths:
+            out = src.with_name(f'{stem}-{w}.{ext}')
+            want_h = round(im.height * w / im.width)
+            # Rebuild when it is missing, older than the source, or a different
+            # shape from the source. The ratio test is what catches a variant
+            # left behind by a *previous* photo: a replacement shot with a new
+            # aspect ratio leaves a correctly-named file that is the wrong
+            # picture, and only the ratio gives it away.
+            stale = (not out.exists()
+                     or out.stat().st_mtime < src.stat().st_mtime
+                     or abs(Image.open(out).width / Image.open(out).height
+                            - im.width / im.height) > 0.01)
+            if not stale:
+                continue
+            why = 'missing' if not out.exists() else 'stale'
+            r = im.convert('RGB').resize((w, want_h), Image.LANCZOS)
+            r.save(out, 'JPEG', quality=78, optimize=True, progressive=True)
+            notes.append(f'{out.name} rebuilt ({why}, {w}x{want_h}, '
+                         f'{out.stat().st_size // 1024} KB)')
+    return notes
+
 
 def make_variants(name: str) -> list:
     """Write <stem>-<w>.<ext> beside the original; return the widths that exist."""
@@ -264,7 +326,11 @@ def asset_version(name: str) -> str:
 
 def build() -> int:
     layout = (SRC / 'layout.html').read_text(encoding='utf-8')
-    # Must precede asset_version('site.css') so the stylesheet hash covers it.
+    # Must precede version_stylesheet_images(), which hashes these files to
+    # write their ?v= into site.css, which in turn must precede
+    # asset_version('site.css') so the stylesheet hash covers it.
+    for note in build_css_background_variants():
+        print(f'  image: {note}')
     version_stylesheet_images()
     cssv, jsv = asset_version('site.css'), asset_version('site.js')
     nav = (SRC / 'nav.html').read_text(encoding='utf-8').strip()

@@ -280,7 +280,11 @@
       t.setAttribute('aria-controls', panel.id);
       panel.setAttribute('role', 'tabpanel');
       panel.setAttribute('aria-labelledby', t.id);
-      panel.setAttribute('tabindex', '0');
+      // No tabindex on the panel. A tabpanel is only made focusable when it
+      // holds nothing focusable, and these are full of <summary> elements. It
+      // also made the panel a valid fragment target, so landing on
+      // /faq/#start focused it and painted a focus ring around the whole
+      // group before the visitor had touched anything.
       t.addEventListener('click', () => select(i));
       t.addEventListener('keydown', e => {
         const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
@@ -296,18 +300,36 @@
     // Deep links. The nav drops down to #money, and unlike the other dropdowns
     // this one switches a tab in place instead of scrolling the page, so the
     // hash has to drive the tabs rather than the browser's anchor jump.
-    function fromHash(focus) {
+    // Why this has to re-scroll rather than trust the browser: the markup
+    // ships all four panels stacked and visible, for no-JS. The browser does
+    // its anchor jump against that full-height layout, then select() hides
+    // three of the four panels and the document collapses by roughly the
+    // height of the page. The scroll offset the browser chose is then past the
+    // end of the shortened document, which is why #everyday and #treatment
+    // landed with the group pinned to the bottom of the window. So: select
+    // first, then scroll, always after the collapse.
+    const card = tablist.closest('.faq-card');
+
+    // behavior is explicit because the page sets scroll-behavior: smooth, and
+    // an animated scroll on first paint is both wrong to look at and unreliable
+    // -- it races the browser's own anchor jump and its scroll restoration, and
+    // a smooth scroll issued while the tab is still hidden is dropped outright.
+    // Arriving from another page should be instant. Picking a tab from the nav
+    // while already here is a deliberate move, so that one animates.
+    function fromHash(focus, behavior) {
       const id = location.hash.slice(1);
       const i = tabs.findIndex(t => t.dataset.panel === id);
       if (i === -1) return false;
       select(i, focus);
-      // Nothing to scroll to: the panel is already at the top of the card.
-      document.querySelector('.faq-card').scrollIntoView({ block: 'start' });
+      // The card, whose first child is the tab strip, so the control the
+      // visitor just used is what lands on screen. scroll-margin-top on
+      // .faq-card is what keeps it clear of the sticky nav.
+      card.scrollIntoView({ block: 'start', behavior: behavior });
       return true;
     }
 
-    if (!fromHash(false)) select(0);
-    window.addEventListener('hashchange', () => fromHash(false));
+    if (!fromHash(false, 'instant')) select(0);
+    window.addEventListener('hashchange', () => fromHash(false, 'smooth'));
   }
 
   // smile quiz
